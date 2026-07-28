@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PriInfo>
+	<ResourceMap name="WinUI.TableView" version="1.0" primary="true">
+		<Qualifiers>
+			<Language>EN-US,DE-DE,ES-ES,JA-JP,PT-BR,RU-RU,SK-SK,ZH-CN,ZH-TW</Language>
+		</Qualifiers>
+		<ResourceMapSubtree name="Files">
+			<ResourceMapSubtree name="WinUI.TableView">
+				<ResourceMapSubtree name="Themes">
+					<NamedResource name="Generic.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/Generic.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="Resources.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/Resources.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableView.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableView.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewCell.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewCell.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewColumnHeader.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewColumnHeader.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewHeaderRow.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewHeaderRow.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewRow.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewRow.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewRowHeader.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewRowHeader.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewRowPresenter.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewRowPresenter.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+					<NamedResource name="TableViewTimePicker.xbf" uri="ms-resource://WinUI.TableView/Files/WinUI.TableView/Themes/TableViewTimePicker.xbf">
+						<Candidate type="EmbeddedData">
+							<Base64Value>[Embedded Binary Data]</Base64Value>
+						</Candidate>
+					</NamedResource>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+		</ResourceMapSubtree>
+		<ResourceMapSubtree name="WinUI.TableView">
+			<ResourceMapSubtree name="WinUI.TableView">
+				<NamedResource name="BlankFilterValue" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/BlankFilterValue">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>(空白)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>(空白)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>(Prázdne)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>(Пусто)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>(Vazio)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>（空白セル）</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>(Vacías)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>(Blank)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>(Leer)</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="Cancel" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/Cancel">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>取消</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>取消</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Zrušiť</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Отменить</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Cancelar</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>キャンセル</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Cancelar</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Cancel</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Abbruch</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="ClearFilter" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/ClearFilter">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>清除篩選</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>清除过滤</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Zrušiť Filter</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Очистить фильтр</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Limpar filtro</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>フィルターをクリア</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Borrar filtro</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Clear Filter</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Filter löschen</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="ClearSorting" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/ClearSorting">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>清除排序</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>清除排序</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Zrušiť Zoradenie</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Убрать сорт.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Limpar ordenação</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>並べ替えをクリア</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Borrar ordenación</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Clear Sorting</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Sortierung aufheben</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="Copy" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/Copy">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>複製</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>复制</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Kopírovať</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Копировать</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Copiar</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>コピー</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Copiar</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Copy</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Kopieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="CopyCommandDescription" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/CopyCommandDescription">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>複製所選列的內容</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>复制所选行</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Skopíruj obsah riadku.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Скопировать выбранные строки в буфер обмена</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Copiar o conteúdo da linha selecionada para a área de transferência.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>選んだ内容をクリップボードにコピーします。</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Copiar las filas seleccionadas al portapapeles.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Copy the selected row's content to clipboard.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Ausgewählte Zeilen in di Zwischenablage kopieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="CopyWithHeaders" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/CopyWithHeaders">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>包含標題一併複製</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>带标题复制</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Skopíruj s hlavičkou</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Копировать с заголовками</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Copiar com cabeçalhos</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>ヘッダー付きコピー</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Copiar incluyendo los encabezados</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Copy with Headers</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Kopieren mit Überschriften</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="CopyWithHeadersCommandDescription" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/CopyWithHeadersCommandDescription">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>複製所選列的內容(含欄位標題)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>复制所选行的内容(包括列标题)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Skopíruj obsah riadku s hlavičkou do schránky.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Скопируйте содержимое выбранных строк в буфер обмена.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Copiar o conteúdo da linha selecionada, incluindo os cabeçalhos das colunas, para a área de transferência.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>ヘッダーおよび選んだ内容をクリップボードにコピーします。</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Copiar las filas seleccionadas incluyendo los encabezadso al portapapeles.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Copy the selected row's content including column headers to clipboard.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Mit Überschriften in die Zwischenablage kopieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="DatePickerPlaceholder" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/DatePickerPlaceholder">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>選擇日期</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>选择日期</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Vyber dátum</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Выберите дату</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Selecionar uma data</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>日付選択</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Seleccionar una fecha</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Pick a date</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Datum auswählen...</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="DeselectAll" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/DeselectAll">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>取消全選</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>取消全选</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Odznač všetko</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Отменить выбор всех</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Desmarcar tudo</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>すべて選択解除</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Eliminar selección</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Deselect All</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Auswahl aufheben</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="DeselectAllCommandDescription" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/DeselectAllCommandDescription">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>取消選取所有列</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>取消选择所有行</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Odznač všetky riadky.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Отменить выбор всех строк.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Desmarcar todas as linhas.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>すべての行の選択を解除します。</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Deseleccionar todas las filas.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Deselect all rows.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Auswahl aufheben</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="ExportAll" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/ExportAll">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>匯出為 CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>导出为CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Exportuj všetko do CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Экспортировать в CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Exportar tabela para CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>すべて CSV 出力</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Exportar tabla a CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Export All to CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Alles nach CSV exportieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="ExportSelected" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/ExportSelected">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>將所選內容匯出為 CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>将所选内容导出为CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Exportuj vybrané do CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Экспортировать всё в CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Exportar seleção para CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>選択部分を CSV 出力</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Exportar selección a CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Export Selected to CSV</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Ausgewählte Zeilen nach CSV exportieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="Ok" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/Ok">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>確定</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>确定</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Ok</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Ok</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>OK</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>OK</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Aceptar</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Ok</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Ok</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SearchBoxPlaceholder" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SearchBoxPlaceholder">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>搜尋…</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>搜索...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Hľadaj...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Искать...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Pesquisar...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>検索...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Buscar...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Search...</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Suchen...</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SelectAll" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SelectAll">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>選取全部內容</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>选择全部内容</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Vyber všetko</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Выбрать всё</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Selecionar tudo</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>すべて選択</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Seleccionar todo</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Select All</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Alles auswählen</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SelectAllCommandDescription" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SelectAllCommandDescription">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>選取所有列</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>选择所有行</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Vyber všetky riadky.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Выбрать все строки.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Selecionar todas as linhas.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>すべての行を選択します。</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Seleccionar todas las filas.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Select all rows.</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Alle Zeilen auswählen</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SelectAllParenthesized" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SelectAllParenthesized">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>全選</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>全选</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>(Vyber všetko)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>(Выбрать всё)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>(Selecionar tudo)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>（すべて選択）</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>(Seleccionar todo)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>(Select All)</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>(Alles auswählen)</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SortAscending" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SortAscending">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>升冪</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>升序</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Zoraď Vzostupne</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Сорт. по возрастанию</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Ordem crescente</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>昇順</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Orden ascendente</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Sort Ascending</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>aufsteigend sortieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SortDescending" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/SortDescending">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>降冪</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>降序</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Zoraď Zostupne</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Сорт. по убыванию</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Ordem decrescente</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>降順</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Orden descendente</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Sort Descending</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>absteigend sortieren</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="TimePickerPlaceholder" uri="ms-resource://WinUI.TableView/WinUI.TableView/WinUI.TableView/TimePickerPlaceholder">
+					<Candidate qualifiers="Language-ZH-TW" type="String">
+						<Value>選擇時間</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ZH-CN" type="String">
+						<Value>选择时间</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-SK-SK" type="String">
+						<Value>Vyber čas</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-RU-RU" type="String">
+						<Value>Выберите время</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-PT-BR" type="String">
+						<Value>Selecionar uma hora</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-JA-JP" type="String">
+						<Value>時刻選択</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-ES-ES" type="String">
+						<Value>Seleccionar una hora</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-EN-US" isDefault="true" type="String">
+						<Value>Pick a time</Value>
+					</Candidate>
+					<Candidate qualifiers="Language-DE-DE" type="String">
+						<Value>Zeit auswählen...</Value>
+					</Candidate>
+				</NamedResource>
+			</ResourceMapSubtree>
+		</ResourceMapSubtree>
+	</ResourceMap>
+</PriInfo>
