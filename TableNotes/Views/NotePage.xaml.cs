@@ -2,6 +2,8 @@ using System.Collections.Specialized;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using TableNotes.Models;
 using TableNotes.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
@@ -172,6 +174,12 @@ public sealed partial class NotePage : UserControl
 
         foreach (var col in _columns)
         {
+            var isReadOnly = col.Header switch
+            {
+                "String ID" or "Source" or "French" or "Italian" or "German" or "Spanish" => true,
+                _ => false,
+            };
+
             var tc = new TableViewTextColumn
             {
                 Header = col.Header,
@@ -183,6 +191,7 @@ public sealed partial class NotePage : UserControl
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                 },
                 ElementStyle = wrapStyle,
+                IsReadOnly = isReadOnly,
             };
 
             tc.Width = col.Header switch
@@ -192,11 +201,22 @@ public sealed partial class NotePage : UserControl
                 _ => new GridLength(1, GridUnitType.Star),
             };
 
+            if (col.Header == "Steps to Reproduce")
+            {
+                var editStyle = new Style(typeof(TextBox));
+                editStyle.Setters.Add(new Setter(TextBox.HorizontalAlignmentProperty, HorizontalAlignment.Stretch));
+                editStyle.Setters.Add(new Setter(TextBox.VerticalAlignmentProperty, VerticalAlignment.Stretch));
+                editStyle.Setters.Add(new Setter(TextBox.TextWrappingProperty, TextWrapping.Wrap));
+                tc.EditingElementStyle = editStyle;
+            }
+
             _tableView.Columns.Add(tc);
         }
 
         _tableView.CellContextFlyout = new MenuFlyout();
         _tableView.CellContextFlyoutOpening += OnCellContextFlyoutOpening;
+        _tableView.CellDoubleTapped += OnCellDoubleTapped;
+        _tableView.PreparingCellForEdit += OnPreparingCellForEdit;
 
         _tableView.SetBinding(TableView.ItemsSourceProperty, new Binding
         {
@@ -218,6 +238,7 @@ public sealed partial class NotePage : UserControl
             return;
 
         var prop = _columns[colIndex].Prop;
+        var header = _columns[colIndex].Header;
         var currentValue = GetPropertyValue(row, prop);
 
         flyout.Items.Clear();
@@ -225,15 +246,58 @@ public sealed partial class NotePage : UserControl
         var copyItem = new MenuFlyoutItem { Text = "Copy", Icon = new SymbolIcon(Symbol.Copy) };
         copyItem.Click += (_, _) => CopyToClipboard(currentValue);
 
-        var editItem = new MenuFlyoutItem { Text = "Edit", Icon = new SymbolIcon(Symbol.Edit) };
-        editItem.Click += (_, _) => _ = ShowEditDialog(row, prop, currentValue);
-
-        var bugItem = new MenuFlyoutItem { Text = "Bug", Icon = new SymbolIcon(Symbol.ReportHacked) };
-        bugItem.Click += (_, _) => _ = ShowBugDialog(row, prop);
-
         flyout.Items.Add(copyItem);
-        flyout.Items.Add(editItem);
-        flyout.Items.Add(bugItem);
+
+        if (header is not ("String ID" or "Source" or "Steps to Reproduce"))
+        {
+            var editItem = new MenuFlyoutItem { Text = "Edit", Icon = new SymbolIcon(Symbol.Edit) };
+            editItem.Click += (_, _) => _ = ShowEditDialog(row, prop, currentValue);
+
+            var bugItem = new MenuFlyoutItem { Text = "Bug", Icon = new SymbolIcon(Symbol.ReportHacked) };
+            bugItem.Click += (_, _) => _ = ShowBugDialog(row, prop);
+
+            flyout.Items.Add(editItem);
+            flyout.Items.Add(bugItem);
+        }
+    }
+
+    private void OnCellDoubleTapped(object? sender, TableViewCellDoubleTappedEventArgs e)
+    {
+        var colIndex = e.Slot.Column;
+        if (colIndex < 0 || colIndex >= _columns.Length)
+            return;
+
+        var header = _columns[colIndex].Header;
+        if (e.Cell is not null && header is "French" or "Italian" or "German" or "Spanish")
+            e.Cell.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
+    }
+
+    private void OnPreparingCellForEdit(object? sender, TableViewPreparingCellForEditEventArgs e)
+    {
+        if (e.Column is not TableViewTextColumn col || e.EditingElement is not TextBox textBox)
+            return;
+
+        var colIndex = _tableView?.Columns.IndexOf(col) ?? -1;
+        if (colIndex < 0 || colIndex >= _columns.Length || _columns[colIndex].Header != "Steps to Reproduce")
+            return;
+
+        textBox.KeyDown -= OnEditingTextBoxKeyDown;
+        textBox.KeyDown += OnEditingTextBoxKeyDown;
+    }
+
+    private void OnEditingTextBoxKeyDown(object? sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key != Windows.System.VirtualKey.Enter || sender is not TextBox textBox)
+            return;
+
+        var menuState = Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Menu);
+        if ((menuState & Windows.UI.Core.CoreVirtualKeyStates.Down) != Windows.UI.Core.CoreVirtualKeyStates.Down)
+            return;
+
+        var idx = textBox.SelectionStart;
+        textBox.Text = textBox.Text.Insert(idx, "\r\n");
+        textBox.SelectionStart = idx + 2;
+        e.Handled = true;
     }
 
     private static string GetPropertyValue(TableRow row, string propName)
