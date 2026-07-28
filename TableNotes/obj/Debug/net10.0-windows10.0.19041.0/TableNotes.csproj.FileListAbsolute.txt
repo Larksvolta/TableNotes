@@ -104,3 +104,4 @@ C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\qualifiers.txt
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\qualifiers.txt.intermediate
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\MultipleQualifiersPerDimensionFound.txt
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\TableNotes.sourcelink.json

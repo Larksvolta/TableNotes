@@ -152,7 +152,7 @@ public sealed partial class NotePage : UserControl
             NotesTree.Visibility = _sidebarExpanded && vm.ShowTreeView ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        ToggleBtn.Content = new SymbolIcon(_sidebarExpanded ? Symbol.ClosePane : Symbol.OpenPane);
+        ToggleBtn.Content = new SymbolIcon(_sidebarExpanded ? Symbol.OpenPane : Symbol.ClosePane);
     }
 
     private void SetupTableView(NotePageViewModel vm)
