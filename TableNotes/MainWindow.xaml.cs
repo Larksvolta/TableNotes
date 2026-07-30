@@ -16,10 +16,14 @@ public sealed partial class MainWindow : Window
     public MainViewModel ViewModel { get; } = new();
     private InputNonClientPointerSource? _nonClientInput;
     private readonly TabView _tabView = new() { IsAddTabButtonVisible = false };
-    private readonly NotePage[] _pages = new NotePage[3];
+    private readonly NotePage[] _pages = new NotePage[4];
+
+    public static MainWindow? Instance { get; private set; }
+    public NotePage? TextFilesPage => _pages.FirstOrDefault(p => p.DataContext is NotePageViewModel vm && vm.PageName == "TextFiles");
 
     public MainWindow()
     {
+        Instance = this;
         InitializeComponent();
 
         var hwnd = WindowNative.GetWindowHandle(this);
@@ -47,14 +51,15 @@ public sealed partial class MainWindow : Window
         _tabView.Loaded += (_, _) => UpdateDragRegions();
         _tabView.SizeChanged += (_, _) => UpdateDragRegions();
 
-        var pageNames = new[] { "Checklist", "Bug Tracker", "Changelog" };
-        var viewModels = new[] { ViewModel.ChecklistVm, ViewModel.BugTrackerVm, ViewModel.ChangelogVm };
+        var pageNames = new[] { "Checklist", "Bug Tracker", "Changelog", "Text Files" };
+        var viewModels = new[] { ViewModel.ChecklistVm, ViewModel.BugTrackerVm, ViewModel.ChangelogVm, ViewModel.TextFilesVm };
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
-            var item = new TabViewItem { Header = pageNames[i], IsClosable = false };
+            var page = new NotePage { DataContext = viewModels[i] };
+            var item = new TabViewItem { Header = pageNames[i], IsClosable = false, Tag = page };
             _tabView.TabItems.Add(item);
-            _pages[i] = new NotePage { DataContext = viewModels[i] };
+            _pages[i] = page;
         }
 
         _tabView.SelectionChanged += OnTabSelectionChanged;
@@ -93,7 +98,7 @@ public sealed partial class MainWindow : Window
         Grid.SetRow(_pages[0], 2);
         RootGrid.Children.Add(_pages[0]);
 
-        for (int i = 1; i < 3; i++)
+        for (int i = 1; i < 4; i++)
         {
             _pages[i].Visibility = Visibility.Collapsed;
             Grid.SetRow(_pages[i], 2);
@@ -105,16 +110,15 @@ public sealed partial class MainWindow : Window
 
     private void OnTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var idx = _tabView.SelectedIndex;
-        for (int i = 0; i < _pages.Length; i++)
-            _pages[i].Visibility = i == idx ? Visibility.Visible : Visibility.Collapsed;
+        var selectedPage = (_tabView.SelectedItem as TabViewItem)?.Tag as NotePage;
+        foreach (var page in _pages)
+            page.Visibility = page == selectedPage ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private NotePageViewModel? GetCurrentVm()
     {
-        var idx = _tabView.SelectedIndex;
-        if (idx < 0 || idx >= _pages.Length) return null;
-        return _pages[idx].DataContext as NotePageViewModel;
+        var page = (_tabView.SelectedItem as TabViewItem)?.Tag as NotePage;
+        return page?.DataContext as NotePageViewModel;
     }
 
     private void UpdateDragRegions()
@@ -138,7 +142,7 @@ public sealed partial class MainWindow : Window
             }
         }
 
-        if (tabPositions.Count == 3)
+        if (tabPositions.Count >= 2)
         {
             captionRects.Add(new RectInt32(0, 0, (int)tabPositions[0].left, topHeight));
 
@@ -151,7 +155,7 @@ public sealed partial class MainWindow : Window
                     captionRects.Add(new RectInt32(gapStart, 0, gapWidth, topHeight));
             }
 
-            var rightStart = (int)tabPositions[2].right;
+            var rightStart = (int)tabPositions[^1].right;
             var rightWidth = (int)w - rightStart - captionButtonsWidth;
             if (rightWidth > 0)
                 captionRects.Add(new RectInt32(rightStart, 0, rightWidth, topHeight));

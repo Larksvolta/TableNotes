@@ -8,12 +8,14 @@ public partial class MainViewModel : ObservableObject
     public NotePageViewModel ChecklistVm { get; }
     public NotePageViewModel BugTrackerVm { get; }
     public NotePageViewModel ChangelogVm { get; }
+    public NotePageViewModel TextFilesVm { get; }
 
     public MainViewModel()
     {
         ChecklistVm = new NotePageViewModel("Checklist");
         BugTrackerVm = new NotePageViewModel("BugTracker");
         ChangelogVm = new NotePageViewModel("Changelog");
+        TextFilesVm = new NotePageViewModel("TextFiles");
     }
 
     [RelayCommand]
@@ -22,5 +24,6 @@ public partial class MainViewModel : ObservableObject
         await ChecklistVm.LoadNotesAsync();
         await BugTrackerVm.LoadNotesAsync();
         await ChangelogVm.LoadNotesAsync();
+        await TextFilesVm.LoadNotesAsync();
     }
 }

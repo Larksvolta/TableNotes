@@ -235,30 +235,30 @@ namespace TableNotes.TableNotes_XamlTypeInfo
             _typeNameTable[5] = "Microsoft.UI.Xaml.Window";
             _typeNameTable[6] = "TableNotes.ViewModels.MainViewModel";
             _typeNameTable[7] = "CommunityToolkit.Mvvm.ComponentModel.ObservableObject";
-            _typeNameTable[8] = "Microsoft.UI.Xaml.Controls.TreeView";
-            _typeNameTable[9] = "Microsoft.UI.Xaml.Controls.Control";
-            _typeNameTable[10] = "Microsoft.UI.Xaml.Style";
-            _typeNameTable[11] = "Microsoft.UI.Xaml.Controls.StyleSelector";
-            _typeNameTable[12] = "Microsoft.UI.Xaml.Media.Animation.TransitionCollection";
-            _typeNameTable[13] = "Microsoft.UI.Xaml.DataTemplate";
-            _typeNameTable[14] = "Microsoft.UI.Xaml.Controls.DataTemplateSelector";
-            _typeNameTable[15] = "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>";
-            _typeNameTable[16] = "Microsoft.UI.Xaml.Controls.TreeViewNode";
-            _typeNameTable[17] = "Microsoft.UI.Xaml.DependencyObject";
-            _typeNameTable[18] = "Int32";
-            _typeNameTable[19] = "System.Collections.Generic.IList`1<Object>";
-            _typeNameTable[20] = "Microsoft.UI.Xaml.Controls.TreeViewSelectionMode";
-            _typeNameTable[21] = "System.Enum";
-            _typeNameTable[22] = "System.ValueType";
-            _typeNameTable[23] = "Microsoft.UI.Xaml.Controls.InfoBar";
-            _typeNameTable[24] = "String";
-            _typeNameTable[25] = "Microsoft.UI.Xaml.Controls.InfoBarSeverity";
-            _typeNameTable[26] = "Microsoft.UI.Xaml.Controls.Primitives.ButtonBase";
-            _typeNameTable[27] = "System.Windows.Input.ICommand";
-            _typeNameTable[28] = "Microsoft.UI.Xaml.Controls.IconSource";
-            _typeNameTable[29] = "Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings";
-            _typeNameTable[30] = "TableNotes.Views.NotePage";
-            _typeNameTable[31] = "Microsoft.UI.Xaml.Controls.UserControl";
+            _typeNameTable[8] = "TableNotes.Views.NotePage";
+            _typeNameTable[9] = "Microsoft.UI.Xaml.Controls.UserControl";
+            _typeNameTable[10] = "Microsoft.UI.Xaml.Controls.TreeView";
+            _typeNameTable[11] = "Microsoft.UI.Xaml.Controls.Control";
+            _typeNameTable[12] = "Microsoft.UI.Xaml.Style";
+            _typeNameTable[13] = "Microsoft.UI.Xaml.Controls.StyleSelector";
+            _typeNameTable[14] = "Microsoft.UI.Xaml.Media.Animation.TransitionCollection";
+            _typeNameTable[15] = "Microsoft.UI.Xaml.DataTemplate";
+            _typeNameTable[16] = "Microsoft.UI.Xaml.Controls.DataTemplateSelector";
+            _typeNameTable[17] = "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>";
+            _typeNameTable[18] = "Microsoft.UI.Xaml.Controls.TreeViewNode";
+            _typeNameTable[19] = "Microsoft.UI.Xaml.DependencyObject";
+            _typeNameTable[20] = "Int32";
+            _typeNameTable[21] = "System.Collections.Generic.IList`1<Object>";
+            _typeNameTable[22] = "Microsoft.UI.Xaml.Controls.TreeViewSelectionMode";
+            _typeNameTable[23] = "System.Enum";
+            _typeNameTable[24] = "System.ValueType";
+            _typeNameTable[25] = "Microsoft.UI.Xaml.Controls.InfoBar";
+            _typeNameTable[26] = "String";
+            _typeNameTable[27] = "Microsoft.UI.Xaml.Controls.InfoBarSeverity";
+            _typeNameTable[28] = "Microsoft.UI.Xaml.Controls.Primitives.ButtonBase";
+            _typeNameTable[29] = "System.Windows.Input.ICommand";
+            _typeNameTable[30] = "Microsoft.UI.Xaml.Controls.IconSource";
+            _typeNameTable[31] = "Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings";
 
             _typeTable = new global::System.Type[32];
             _typeTable[0] = typeof(global::Microsoft.UI.Xaml.Controls.XamlControlsResources);
@@ -269,30 +269,30 @@ namespace TableNotes.TableNotes_XamlTypeInfo
             _typeTable[5] = typeof(global::Microsoft.UI.Xaml.Window);
             _typeTable[6] = typeof(global::TableNotes.ViewModels.MainViewModel);
             _typeTable[7] = typeof(global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject);
-            _typeTable[8] = typeof(global::Microsoft.UI.Xaml.Controls.TreeView);
-            _typeTable[9] = typeof(global::Microsoft.UI.Xaml.Controls.Control);
-            _typeTable[10] = typeof(global::Microsoft.UI.Xaml.Style);
-            _typeTable[11] = typeof(global::Microsoft.UI.Xaml.Controls.StyleSelector);
-            _typeTable[12] = typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection);
-            _typeTable[13] = typeof(global::Microsoft.UI.Xaml.DataTemplate);
-            _typeTable[14] = typeof(global::Microsoft.UI.Xaml.Controls.DataTemplateSelector);
-            _typeTable[15] = typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>);
-            _typeTable[16] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode);
-            _typeTable[17] = typeof(global::Microsoft.UI.Xaml.DependencyObject);
-            _typeTable[18] = typeof(global::System.Int32);
-            _typeTable[19] = typeof(global::System.Collections.Generic.IList<global::System.Object>);
-            _typeTable[20] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode);
-            _typeTable[21] = typeof(global::System.Enum);
-            _typeTable[22] = typeof(global::System.ValueType);
-            _typeTable[23] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBar);
-            _typeTable[24] = typeof(global::System.String);
-            _typeTable[25] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBarSeverity);
-            _typeTable[26] = typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase);
-            _typeTable[27] = typeof(global::System.Windows.Input.ICommand);
-            _typeTable[28] = typeof(global::Microsoft.UI.Xaml.Controls.IconSource);
-            _typeTable[29] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings);
-            _typeTable[30] = typeof(global::TableNotes.Views.NotePage);
-            _typeTable[31] = typeof(global::Microsoft.UI.Xaml.Controls.UserControl);
+            _typeTable[8] = typeof(global::TableNotes.Views.NotePage);
+            _typeTable[9] = typeof(global::Microsoft.UI.Xaml.Controls.UserControl);
+            _typeTable[10] = typeof(global::Microsoft.UI.Xaml.Controls.TreeView);
+            _typeTable[11] = typeof(global::Microsoft.UI.Xaml.Controls.Control);
+            _typeTable[12] = typeof(global::Microsoft.UI.Xaml.Style);
+            _typeTable[13] = typeof(global::Microsoft.UI.Xaml.Controls.StyleSelector);
+            _typeTable[14] = typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection);
+            _typeTable[15] = typeof(global::Microsoft.UI.Xaml.DataTemplate);
+            _typeTable[16] = typeof(global::Microsoft.UI.Xaml.Controls.DataTemplateSelector);
+            _typeTable[17] = typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>);
+            _typeTable[18] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode);
+            _typeTable[19] = typeof(global::Microsoft.UI.Xaml.DependencyObject);
+            _typeTable[20] = typeof(global::System.Int32);
+            _typeTable[21] = typeof(global::System.Collections.Generic.IList<global::System.Object>);
+            _typeTable[22] = typeof(global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode);
+            _typeTable[23] = typeof(global::System.Enum);
+            _typeTable[24] = typeof(global::System.ValueType);
+            _typeTable[25] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBar);
+            _typeTable[26] = typeof(global::System.String);
+            _typeTable[27] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBarSeverity);
+            _typeTable[28] = typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase);
+            _typeTable[29] = typeof(global::System.Windows.Input.ICommand);
+            _typeTable[30] = typeof(global::Microsoft.UI.Xaml.Controls.IconSource);
+            _typeTable[31] = typeof(global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings);
         }
 
         private int LookupTypeIndexByName(string typeName)
@@ -330,27 +330,27 @@ namespace TableNotes.TableNotes_XamlTypeInfo
         private object Activate_0_XamlControlsResources() { return new global::Microsoft.UI.Xaml.Controls.XamlControlsResources(); }
         private object Activate_4_MainWindow() { return new global::TableNotes.MainWindow(); }
         private object Activate_6_MainViewModel() { return new global::TableNotes.ViewModels.MainViewModel(); }
-        private object Activate_8_TreeView() { return new global::Microsoft.UI.Xaml.Controls.TreeView(); }
-        private object Activate_16_TreeViewNode() { return new global::Microsoft.UI.Xaml.Controls.TreeViewNode(); }
-        private object Activate_23_InfoBar() { return new global::Microsoft.UI.Xaml.Controls.InfoBar(); }
-        private object Activate_29_InfoBarTemplateSettings() { return new global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings(); }
-        private object Activate_30_NotePage() { return new global::TableNotes.Views.NotePage(); }
+        private object Activate_8_NotePage() { return new global::TableNotes.Views.NotePage(); }
+        private object Activate_10_TreeView() { return new global::Microsoft.UI.Xaml.Controls.TreeView(); }
+        private object Activate_18_TreeViewNode() { return new global::Microsoft.UI.Xaml.Controls.TreeViewNode(); }
+        private object Activate_25_InfoBar() { return new global::Microsoft.UI.Xaml.Controls.InfoBar(); }
+        private object Activate_31_InfoBarTemplateSettings() { return new global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings(); }
         private void StaticInitializer_0_XamlControlsResources() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.XamlControlsResources).TypeHandle);
         private void StaticInitializer_4_MainWindow() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::TableNotes.MainWindow).TypeHandle);
         private void StaticInitializer_6_MainViewModel() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::TableNotes.ViewModels.MainViewModel).TypeHandle);
         private void StaticInitializer_7_ObservableObject() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject).TypeHandle);
-        private void StaticInitializer_8_TreeView() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeView).TypeHandle);
-        private void StaticInitializer_15_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>).TypeHandle);
-        private void StaticInitializer_16_TreeViewNode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode).TypeHandle);
-        private void StaticInitializer_19_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::System.Object>).TypeHandle);
-        private void StaticInitializer_20_TreeViewSelectionMode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode).TypeHandle);
-        private void StaticInitializer_21_Enum() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Enum).TypeHandle);
-        private void StaticInitializer_22_ValueType() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.ValueType).TypeHandle);
-        private void StaticInitializer_23_InfoBar() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBar).TypeHandle);
-        private void StaticInitializer_25_InfoBarSeverity() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBarSeverity).TypeHandle);
-        private void StaticInitializer_27_ICommand() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Windows.Input.ICommand).TypeHandle);
-        private void StaticInitializer_29_InfoBarTemplateSettings() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings).TypeHandle);
-        private void StaticInitializer_30_NotePage() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::TableNotes.Views.NotePage).TypeHandle);
+        private void StaticInitializer_8_NotePage() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::TableNotes.Views.NotePage).TypeHandle);
+        private void StaticInitializer_10_TreeView() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeView).TypeHandle);
+        private void StaticInitializer_17_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.TreeViewNode>).TypeHandle);
+        private void StaticInitializer_18_TreeViewNode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewNode).TypeHandle);
+        private void StaticInitializer_21_IList() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Collections.Generic.IList<global::System.Object>).TypeHandle);
+        private void StaticInitializer_22_TreeViewSelectionMode() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode).TypeHandle);
+        private void StaticInitializer_23_Enum() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Enum).TypeHandle);
+        private void StaticInitializer_24_ValueType() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.ValueType).TypeHandle);
+        private void StaticInitializer_25_InfoBar() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBar).TypeHandle);
+        private void StaticInitializer_27_InfoBarSeverity() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBarSeverity).TypeHandle);
+        private void StaticInitializer_29_ICommand() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::System.Windows.Input.ICommand).TypeHandle);
+        private void StaticInitializer_31_InfoBarTemplateSettings() => global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(global::Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings).TypeHandle);
         private void MapAdd_0_XamlControlsResources(object instance, object key, object item)
         {
             var collection = (global::System.Collections.Generic.IDictionary<global::System.Object, global::System.Object>)instance;
@@ -358,13 +358,13 @@ namespace TableNotes.TableNotes_XamlTypeInfo
             var newItem = (global::System.Object)item;
             collection.Add(newKey, newItem);
         }
-        private void VectorAdd_15_IList(object instance, object item)
+        private void VectorAdd_17_IList(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Controls.TreeViewNode>)instance;
             var newItem = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)item;
             collection.Add(newItem);
         }
-        private void VectorAdd_19_IList(object instance, object item)
+        private void VectorAdd_21_IList(object instance, object item)
         {
             var collection = (global::System.Collections.Generic.ICollection<global::System.Object>)instance;
             var newItem = (global::System.Object)item;
@@ -407,6 +407,7 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 userType.Activator = Activate_4_MainWindow;
                 userType.StaticInitializer = StaticInitializer_4_MainWindow;
                 userType.AddMemberName("ViewModel");
+                userType.AddMemberName("TextFilesPage");
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;
@@ -429,10 +430,22 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 8:   //  Microsoft.UI.Xaml.Controls.TreeView
+            case 8:   //  TableNotes.Views.NotePage
+                userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.UserControl"));
+                userType.Activator = Activate_8_NotePage;
+                userType.StaticInitializer = StaticInitializer_8_NotePage;
+                userType.SetIsLocalType();
+                xamlType = userType;
+                break;
+
+            case 9:   //  Microsoft.UI.Xaml.Controls.UserControl
+                xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
+                break;
+
+            case 10:   //  Microsoft.UI.Xaml.Controls.TreeView
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Control"));
-                userType.Activator = Activate_8_TreeView;
-                userType.StaticInitializer = StaticInitializer_8_TreeView;
+                userType.Activator = Activate_10_TreeView;
+                userType.StaticInitializer = StaticInitializer_10_TreeView;
                 userType.AddMemberName("CanDragItems");
                 userType.AddMemberName("CanReorderItems");
                 userType.AddMemberName("ItemContainerStyle");
@@ -450,42 +463,42 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 9:   //  Microsoft.UI.Xaml.Controls.Control
+            case 11:   //  Microsoft.UI.Xaml.Controls.Control
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 10:   //  Microsoft.UI.Xaml.Style
+            case 12:   //  Microsoft.UI.Xaml.Style
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 11:   //  Microsoft.UI.Xaml.Controls.StyleSelector
+            case 13:   //  Microsoft.UI.Xaml.Controls.StyleSelector
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 12:   //  Microsoft.UI.Xaml.Media.Animation.TransitionCollection
+            case 14:   //  Microsoft.UI.Xaml.Media.Animation.TransitionCollection
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 13:   //  Microsoft.UI.Xaml.DataTemplate
+            case 15:   //  Microsoft.UI.Xaml.DataTemplate
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 14:   //  Microsoft.UI.Xaml.Controls.DataTemplateSelector
+            case 16:   //  Microsoft.UI.Xaml.Controls.DataTemplateSelector
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 15:   //  System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>
+            case 17:   //  System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, null);
-                userType.StaticInitializer = StaticInitializer_15_IList;
-                userType.CollectionAdd = VectorAdd_15_IList;
+                userType.StaticInitializer = StaticInitializer_17_IList;
+                userType.CollectionAdd = VectorAdd_17_IList;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 16:   //  Microsoft.UI.Xaml.Controls.TreeViewNode
+            case 18:   //  Microsoft.UI.Xaml.Controls.TreeViewNode
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.DependencyObject"));
-                userType.Activator = Activate_16_TreeViewNode;
-                userType.StaticInitializer = StaticInitializer_16_TreeViewNode;
+                userType.Activator = Activate_18_TreeViewNode;
+                userType.StaticInitializer = StaticInitializer_18_TreeViewNode;
                 userType.AddMemberName("Children");
                 userType.AddMemberName("Content");
                 userType.AddMemberName("Depth");
@@ -497,47 +510,47 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 17:   //  Microsoft.UI.Xaml.DependencyObject
+            case 19:   //  Microsoft.UI.Xaml.DependencyObject
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 18:   //  Int32
+            case 20:   //  Int32
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 19:   //  System.Collections.Generic.IList`1<Object>
+            case 21:   //  System.Collections.Generic.IList`1<Object>
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, null);
-                userType.StaticInitializer = StaticInitializer_19_IList;
-                userType.CollectionAdd = VectorAdd_19_IList;
+                userType.StaticInitializer = StaticInitializer_21_IList;
+                userType.CollectionAdd = VectorAdd_21_IList;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 20:   //  Microsoft.UI.Xaml.Controls.TreeViewSelectionMode
+            case 22:   //  Microsoft.UI.Xaml.Controls.TreeViewSelectionMode
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Enum"));
-                userType.StaticInitializer = StaticInitializer_20_TreeViewSelectionMode;
+                userType.StaticInitializer = StaticInitializer_22_TreeViewSelectionMode;
                 userType.AddEnumValue("None", global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode.None);
                 userType.AddEnumValue("Single", global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode.Single);
                 userType.AddEnumValue("Multiple", global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode.Multiple);
                 xamlType = userType;
                 break;
 
-            case 21:   //  System.Enum
+            case 23:   //  System.Enum
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.ValueType"));
-                userType.StaticInitializer = StaticInitializer_21_Enum;
+                userType.StaticInitializer = StaticInitializer_23_Enum;
                 xamlType = userType;
                 break;
 
-            case 22:   //  System.ValueType
+            case 24:   //  System.ValueType
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
-                userType.StaticInitializer = StaticInitializer_22_ValueType;
+                userType.StaticInitializer = StaticInitializer_24_ValueType;
                 xamlType = userType;
                 break;
 
-            case 23:   //  Microsoft.UI.Xaml.Controls.InfoBar
+            case 25:   //  Microsoft.UI.Xaml.Controls.InfoBar
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.Control"));
-                userType.Activator = Activate_23_InfoBar;
-                userType.StaticInitializer = StaticInitializer_23_InfoBar;
+                userType.Activator = Activate_25_InfoBar;
+                userType.StaticInitializer = StaticInitializer_25_InfoBar;
                 userType.SetContentPropertyName("Microsoft.UI.Xaml.Controls.InfoBar.Content");
                 userType.AddMemberName("Content");
                 userType.AddMemberName("Message");
@@ -556,13 +569,13 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 24:   //  String
+            case 26:   //  String
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 25:   //  Microsoft.UI.Xaml.Controls.InfoBarSeverity
+            case 27:   //  Microsoft.UI.Xaml.Controls.InfoBarSeverity
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("System.Enum"));
-                userType.StaticInitializer = StaticInitializer_25_InfoBarSeverity;
+                userType.StaticInitializer = StaticInitializer_27_InfoBarSeverity;
                 userType.AddEnumValue("Informational", global::Microsoft.UI.Xaml.Controls.InfoBarSeverity.Informational);
                 userType.AddEnumValue("Success", global::Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success);
                 userType.AddEnumValue("Warning", global::Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning);
@@ -570,38 +583,26 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 26:   //  Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
+            case 28:   //  Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 27:   //  System.Windows.Input.ICommand
+            case 29:   //  System.Windows.Input.ICommand
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, null);
-                userType.StaticInitializer = StaticInitializer_27_ICommand;
+                userType.StaticInitializer = StaticInitializer_29_ICommand;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
                 break;
 
-            case 28:   //  Microsoft.UI.Xaml.Controls.IconSource
+            case 30:   //  Microsoft.UI.Xaml.Controls.IconSource
                 xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
 
-            case 29:   //  Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings
+            case 31:   //  Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings
                 userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.DependencyObject"));
-                userType.StaticInitializer = StaticInitializer_29_InfoBarTemplateSettings;
+                userType.StaticInitializer = StaticInitializer_31_InfoBarTemplateSettings;
                 userType.SetIsReturnTypeStub();
                 xamlType = userType;
-                break;
-
-            case 30:   //  TableNotes.Views.NotePage
-                userType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Microsoft.UI.Xaml.Controls.UserControl"));
-                userType.Activator = Activate_30_NotePage;
-                userType.StaticInitializer = StaticInitializer_30_NotePage;
-                userType.SetIsLocalType();
-                xamlType = userType;
-                break;
-
-            case 31:   //  Microsoft.UI.Xaml.Controls.UserControl
-                xamlType = new global::TableNotes.TableNotes_XamlTypeInfo.XamlSystemBaseType(typeName, type);
                 break;
             }
             return xamlType;
@@ -679,312 +680,317 @@ namespace TableNotes.TableNotes_XamlTypeInfo
             var that = (global::TableNotes.MainWindow)instance;
             return that.ViewModel;
         }
-        private object get_2_TreeView_CanDragItems(object instance)
+        private object get_2_MainWindow_TextFilesPage(object instance)
+        {
+            var that = (global::TableNotes.MainWindow)instance;
+            return that.TextFilesPage;
+        }
+        private object get_3_TreeView_CanDragItems(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.CanDragItems;
         }
-        private void set_2_TreeView_CanDragItems(object instance, object Value)
+        private void set_3_TreeView_CanDragItems(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.CanDragItems = (global::System.Boolean)Value;
         }
-        private object get_3_TreeView_CanReorderItems(object instance)
+        private object get_4_TreeView_CanReorderItems(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.CanReorderItems;
         }
-        private void set_3_TreeView_CanReorderItems(object instance, object Value)
+        private void set_4_TreeView_CanReorderItems(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.CanReorderItems = (global::System.Boolean)Value;
         }
-        private object get_4_TreeView_ItemContainerStyle(object instance)
+        private object get_5_TreeView_ItemContainerStyle(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemContainerStyle;
         }
-        private void set_4_TreeView_ItemContainerStyle(object instance, object Value)
+        private void set_5_TreeView_ItemContainerStyle(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemContainerStyle = (global::Microsoft.UI.Xaml.Style)Value;
         }
-        private object get_5_TreeView_ItemContainerStyleSelector(object instance)
+        private object get_6_TreeView_ItemContainerStyleSelector(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemContainerStyleSelector;
         }
-        private void set_5_TreeView_ItemContainerStyleSelector(object instance, object Value)
+        private void set_6_TreeView_ItemContainerStyleSelector(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemContainerStyleSelector = (global::Microsoft.UI.Xaml.Controls.StyleSelector)Value;
         }
-        private object get_6_TreeView_ItemContainerTransitions(object instance)
+        private object get_7_TreeView_ItemContainerTransitions(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemContainerTransitions;
         }
-        private void set_6_TreeView_ItemContainerTransitions(object instance, object Value)
+        private void set_7_TreeView_ItemContainerTransitions(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemContainerTransitions = (global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)Value;
         }
-        private object get_7_TreeView_ItemTemplate(object instance)
+        private object get_8_TreeView_ItemTemplate(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemTemplate;
         }
-        private void set_7_TreeView_ItemTemplate(object instance, object Value)
+        private void set_8_TreeView_ItemTemplate(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemTemplate = (global::Microsoft.UI.Xaml.DataTemplate)Value;
         }
-        private object get_8_TreeView_ItemTemplateSelector(object instance)
+        private object get_9_TreeView_ItemTemplateSelector(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemTemplateSelector;
         }
-        private void set_8_TreeView_ItemTemplateSelector(object instance, object Value)
+        private void set_9_TreeView_ItemTemplateSelector(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemTemplateSelector = (global::Microsoft.UI.Xaml.Controls.DataTemplateSelector)Value;
         }
-        private object get_9_TreeView_ItemsSource(object instance)
+        private object get_10_TreeView_ItemsSource(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.ItemsSource;
         }
-        private void set_9_TreeView_ItemsSource(object instance, object Value)
+        private void set_10_TreeView_ItemsSource(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.ItemsSource = (global::System.Object)Value;
         }
-        private object get_10_TreeView_RootNodes(object instance)
+        private object get_11_TreeView_RootNodes(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.RootNodes;
         }
-        private object get_11_TreeViewNode_Children(object instance)
+        private object get_12_TreeViewNode_Children(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.Children;
         }
-        private object get_12_TreeViewNode_Content(object instance)
+        private object get_13_TreeViewNode_Content(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.Content;
         }
-        private void set_12_TreeViewNode_Content(object instance, object Value)
+        private void set_13_TreeViewNode_Content(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             that.Content = (global::System.Object)Value;
         }
-        private object get_13_TreeViewNode_Depth(object instance)
+        private object get_14_TreeViewNode_Depth(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.Depth;
         }
-        private object get_14_TreeViewNode_HasChildren(object instance)
+        private object get_15_TreeViewNode_HasChildren(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.HasChildren;
         }
-        private object get_15_TreeViewNode_HasUnrealizedChildren(object instance)
+        private object get_16_TreeViewNode_HasUnrealizedChildren(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.HasUnrealizedChildren;
         }
-        private void set_15_TreeViewNode_HasUnrealizedChildren(object instance, object Value)
+        private void set_16_TreeViewNode_HasUnrealizedChildren(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             that.HasUnrealizedChildren = (global::System.Boolean)Value;
         }
-        private object get_16_TreeViewNode_IsExpanded(object instance)
+        private object get_17_TreeViewNode_IsExpanded(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.IsExpanded;
         }
-        private void set_16_TreeViewNode_IsExpanded(object instance, object Value)
+        private void set_17_TreeViewNode_IsExpanded(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             that.IsExpanded = (global::System.Boolean)Value;
         }
-        private object get_17_TreeViewNode_Parent(object instance)
+        private object get_18_TreeViewNode_Parent(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)instance;
             return that.Parent;
         }
-        private object get_18_TreeView_SelectedItem(object instance)
+        private object get_19_TreeView_SelectedItem(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.SelectedItem;
         }
-        private void set_18_TreeView_SelectedItem(object instance, object Value)
+        private void set_19_TreeView_SelectedItem(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.SelectedItem = (global::System.Object)Value;
         }
-        private object get_19_TreeView_SelectedItems(object instance)
+        private object get_20_TreeView_SelectedItems(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.SelectedItems;
         }
-        private object get_20_TreeView_SelectedNode(object instance)
+        private object get_21_TreeView_SelectedNode(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.SelectedNode;
         }
-        private void set_20_TreeView_SelectedNode(object instance, object Value)
+        private void set_21_TreeView_SelectedNode(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.SelectedNode = (global::Microsoft.UI.Xaml.Controls.TreeViewNode)Value;
         }
-        private object get_21_TreeView_SelectedNodes(object instance)
+        private object get_22_TreeView_SelectedNodes(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.SelectedNodes;
         }
-        private object get_22_TreeView_SelectionMode(object instance)
+        private object get_23_TreeView_SelectionMode(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             return that.SelectionMode;
         }
-        private void set_22_TreeView_SelectionMode(object instance, object Value)
+        private void set_23_TreeView_SelectionMode(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.TreeView)instance;
             that.SelectionMode = (global::Microsoft.UI.Xaml.Controls.TreeViewSelectionMode)Value;
         }
-        private object get_23_InfoBar_Content(object instance)
+        private object get_24_InfoBar_Content(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.Content;
         }
-        private void set_23_InfoBar_Content(object instance, object Value)
+        private void set_24_InfoBar_Content(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.Content = (global::System.Object)Value;
         }
-        private object get_24_InfoBar_Message(object instance)
+        private object get_25_InfoBar_Message(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.Message;
         }
-        private void set_24_InfoBar_Message(object instance, object Value)
+        private void set_25_InfoBar_Message(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.Message = (global::System.String)Value;
         }
-        private object get_25_InfoBar_IsOpen(object instance)
+        private object get_26_InfoBar_IsOpen(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.IsOpen;
         }
-        private void set_25_InfoBar_IsOpen(object instance, object Value)
+        private void set_26_InfoBar_IsOpen(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.IsOpen = (global::System.Boolean)Value;
         }
-        private object get_26_InfoBar_Severity(object instance)
+        private object get_27_InfoBar_Severity(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.Severity;
         }
-        private void set_26_InfoBar_Severity(object instance, object Value)
+        private void set_27_InfoBar_Severity(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.Severity = (global::Microsoft.UI.Xaml.Controls.InfoBarSeverity)Value;
         }
-        private object get_27_InfoBar_IsClosable(object instance)
+        private object get_28_InfoBar_IsClosable(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.IsClosable;
         }
-        private void set_27_InfoBar_IsClosable(object instance, object Value)
+        private void set_28_InfoBar_IsClosable(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.IsClosable = (global::System.Boolean)Value;
         }
-        private object get_28_InfoBar_ActionButton(object instance)
+        private object get_29_InfoBar_ActionButton(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.ActionButton;
         }
-        private void set_28_InfoBar_ActionButton(object instance, object Value)
+        private void set_29_InfoBar_ActionButton(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.ActionButton = (global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)Value;
         }
-        private object get_29_InfoBar_CloseButtonCommand(object instance)
+        private object get_30_InfoBar_CloseButtonCommand(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.CloseButtonCommand;
         }
-        private void set_29_InfoBar_CloseButtonCommand(object instance, object Value)
+        private void set_30_InfoBar_CloseButtonCommand(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.CloseButtonCommand = (global::System.Windows.Input.ICommand)Value;
         }
-        private object get_30_InfoBar_CloseButtonCommandParameter(object instance)
+        private object get_31_InfoBar_CloseButtonCommandParameter(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.CloseButtonCommandParameter;
         }
-        private void set_30_InfoBar_CloseButtonCommandParameter(object instance, object Value)
+        private void set_31_InfoBar_CloseButtonCommandParameter(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.CloseButtonCommandParameter = (global::System.Object)Value;
         }
-        private object get_31_InfoBar_CloseButtonStyle(object instance)
+        private object get_32_InfoBar_CloseButtonStyle(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.CloseButtonStyle;
         }
-        private void set_31_InfoBar_CloseButtonStyle(object instance, object Value)
+        private void set_32_InfoBar_CloseButtonStyle(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.CloseButtonStyle = (global::Microsoft.UI.Xaml.Style)Value;
         }
-        private object get_32_InfoBar_ContentTemplate(object instance)
+        private object get_33_InfoBar_ContentTemplate(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.ContentTemplate;
         }
-        private void set_32_InfoBar_ContentTemplate(object instance, object Value)
+        private void set_33_InfoBar_ContentTemplate(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.ContentTemplate = (global::Microsoft.UI.Xaml.DataTemplate)Value;
         }
-        private object get_33_InfoBar_IconSource(object instance)
+        private object get_34_InfoBar_IconSource(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.IconSource;
         }
-        private void set_33_InfoBar_IconSource(object instance, object Value)
+        private void set_34_InfoBar_IconSource(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.IconSource = (global::Microsoft.UI.Xaml.Controls.IconSource)Value;
         }
-        private object get_34_InfoBar_IsIconVisible(object instance)
+        private object get_35_InfoBar_IsIconVisible(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.IsIconVisible;
         }
-        private void set_34_InfoBar_IsIconVisible(object instance, object Value)
+        private void set_35_InfoBar_IsIconVisible(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.IsIconVisible = (global::System.Boolean)Value;
         }
-        private object get_35_InfoBar_TemplateSettings(object instance)
+        private object get_36_InfoBar_TemplateSettings(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.TemplateSettings;
         }
-        private object get_36_InfoBar_Title(object instance)
+        private object get_37_InfoBar_Title(object instance)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             return that.Title;
         }
-        private void set_36_InfoBar_Title(object instance, object Value)
+        private void set_37_InfoBar_Title(object instance, object Value)
         {
             var that = (global::Microsoft.UI.Xaml.Controls.InfoBar)instance;
             that.Title = (global::System.String)Value;
@@ -1010,243 +1016,249 @@ namespace TableNotes.TableNotes_XamlTypeInfo
                 xamlMember.Getter = get_1_MainWindow_ViewModel;
                 xamlMember.SetIsReadOnly();
                 break;
+            case "TableNotes.MainWindow.TextFilesPage":
+                userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("TableNotes.MainWindow");
+                xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "TextFilesPage", "TableNotes.Views.NotePage");
+                xamlMember.Getter = get_2_MainWindow_TextFilesPage;
+                xamlMember.SetIsReadOnly();
+                break;
             case "Microsoft.UI.Xaml.Controls.TreeView.CanDragItems":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "CanDragItems", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_2_TreeView_CanDragItems;
-                xamlMember.Setter = set_2_TreeView_CanDragItems;
+                xamlMember.Getter = get_3_TreeView_CanDragItems;
+                xamlMember.Setter = set_3_TreeView_CanDragItems;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.CanReorderItems":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "CanReorderItems", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_3_TreeView_CanReorderItems;
-                xamlMember.Setter = set_3_TreeView_CanReorderItems;
+                xamlMember.Getter = get_4_TreeView_CanReorderItems;
+                xamlMember.Setter = set_4_TreeView_CanReorderItems;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemContainerStyle":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemContainerStyle", "Microsoft.UI.Xaml.Style");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_4_TreeView_ItemContainerStyle;
-                xamlMember.Setter = set_4_TreeView_ItemContainerStyle;
+                xamlMember.Getter = get_5_TreeView_ItemContainerStyle;
+                xamlMember.Setter = set_5_TreeView_ItemContainerStyle;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemContainerStyleSelector":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemContainerStyleSelector", "Microsoft.UI.Xaml.Controls.StyleSelector");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_5_TreeView_ItemContainerStyleSelector;
-                xamlMember.Setter = set_5_TreeView_ItemContainerStyleSelector;
+                xamlMember.Getter = get_6_TreeView_ItemContainerStyleSelector;
+                xamlMember.Setter = set_6_TreeView_ItemContainerStyleSelector;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemContainerTransitions":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemContainerTransitions", "Microsoft.UI.Xaml.Media.Animation.TransitionCollection");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_6_TreeView_ItemContainerTransitions;
-                xamlMember.Setter = set_6_TreeView_ItemContainerTransitions;
+                xamlMember.Getter = get_7_TreeView_ItemContainerTransitions;
+                xamlMember.Setter = set_7_TreeView_ItemContainerTransitions;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemTemplate":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemTemplate", "Microsoft.UI.Xaml.DataTemplate");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_7_TreeView_ItemTemplate;
-                xamlMember.Setter = set_7_TreeView_ItemTemplate;
+                xamlMember.Getter = get_8_TreeView_ItemTemplate;
+                xamlMember.Setter = set_8_TreeView_ItemTemplate;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemTemplateSelector":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemTemplateSelector", "Microsoft.UI.Xaml.Controls.DataTemplateSelector");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_8_TreeView_ItemTemplateSelector;
-                xamlMember.Setter = set_8_TreeView_ItemTemplateSelector;
+                xamlMember.Getter = get_9_TreeView_ItemTemplateSelector;
+                xamlMember.Setter = set_9_TreeView_ItemTemplateSelector;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.ItemsSource":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ItemsSource", "Object");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_9_TreeView_ItemsSource;
-                xamlMember.Setter = set_9_TreeView_ItemsSource;
+                xamlMember.Getter = get_10_TreeView_ItemsSource;
+                xamlMember.Setter = set_10_TreeView_ItemsSource;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.RootNodes":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "RootNodes", "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>");
-                xamlMember.Getter = get_10_TreeView_RootNodes;
+                xamlMember.Getter = get_11_TreeView_RootNodes;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.Children":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Children", "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>");
-                xamlMember.Getter = get_11_TreeViewNode_Children;
+                xamlMember.Getter = get_12_TreeViewNode_Children;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.Content":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Content", "Object");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_12_TreeViewNode_Content;
-                xamlMember.Setter = set_12_TreeViewNode_Content;
+                xamlMember.Getter = get_13_TreeViewNode_Content;
+                xamlMember.Setter = set_13_TreeViewNode_Content;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.Depth":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Depth", "Int32");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_13_TreeViewNode_Depth;
+                xamlMember.Getter = get_14_TreeViewNode_Depth;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.HasChildren":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "HasChildren", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_14_TreeViewNode_HasChildren;
+                xamlMember.Getter = get_15_TreeViewNode_HasChildren;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.HasUnrealizedChildren":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "HasUnrealizedChildren", "Boolean");
-                xamlMember.Getter = get_15_TreeViewNode_HasUnrealizedChildren;
-                xamlMember.Setter = set_15_TreeViewNode_HasUnrealizedChildren;
+                xamlMember.Getter = get_16_TreeViewNode_HasUnrealizedChildren;
+                xamlMember.Setter = set_16_TreeViewNode_HasUnrealizedChildren;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.IsExpanded":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "IsExpanded", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_16_TreeViewNode_IsExpanded;
-                xamlMember.Setter = set_16_TreeViewNode_IsExpanded;
+                xamlMember.Getter = get_17_TreeViewNode_IsExpanded;
+                xamlMember.Setter = set_17_TreeViewNode_IsExpanded;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeViewNode.Parent":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeViewNode");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Parent", "Microsoft.UI.Xaml.Controls.TreeViewNode");
-                xamlMember.Getter = get_17_TreeViewNode_Parent;
+                xamlMember.Getter = get_18_TreeViewNode_Parent;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.SelectedItem":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "SelectedItem", "Object");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_18_TreeView_SelectedItem;
-                xamlMember.Setter = set_18_TreeView_SelectedItem;
+                xamlMember.Getter = get_19_TreeView_SelectedItem;
+                xamlMember.Setter = set_19_TreeView_SelectedItem;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.SelectedItems":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "SelectedItems", "System.Collections.Generic.IList`1<Object>");
-                xamlMember.Getter = get_19_TreeView_SelectedItems;
+                xamlMember.Getter = get_20_TreeView_SelectedItems;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.SelectedNode":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "SelectedNode", "Microsoft.UI.Xaml.Controls.TreeViewNode");
-                xamlMember.Getter = get_20_TreeView_SelectedNode;
-                xamlMember.Setter = set_20_TreeView_SelectedNode;
+                xamlMember.Getter = get_21_TreeView_SelectedNode;
+                xamlMember.Setter = set_21_TreeView_SelectedNode;
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.SelectedNodes":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "SelectedNodes", "System.Collections.Generic.IList`1<Microsoft.UI.Xaml.Controls.TreeViewNode>");
-                xamlMember.Getter = get_21_TreeView_SelectedNodes;
+                xamlMember.Getter = get_22_TreeView_SelectedNodes;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.TreeView.SelectionMode":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.TreeView");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "SelectionMode", "Microsoft.UI.Xaml.Controls.TreeViewSelectionMode");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_22_TreeView_SelectionMode;
-                xamlMember.Setter = set_22_TreeView_SelectionMode;
+                xamlMember.Getter = get_23_TreeView_SelectionMode;
+                xamlMember.Setter = set_23_TreeView_SelectionMode;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.Content":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Content", "Object");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_23_InfoBar_Content;
-                xamlMember.Setter = set_23_InfoBar_Content;
+                xamlMember.Getter = get_24_InfoBar_Content;
+                xamlMember.Setter = set_24_InfoBar_Content;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.Message":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Message", "String");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_24_InfoBar_Message;
-                xamlMember.Setter = set_24_InfoBar_Message;
+                xamlMember.Getter = get_25_InfoBar_Message;
+                xamlMember.Setter = set_25_InfoBar_Message;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.IsOpen":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "IsOpen", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_25_InfoBar_IsOpen;
-                xamlMember.Setter = set_25_InfoBar_IsOpen;
+                xamlMember.Getter = get_26_InfoBar_IsOpen;
+                xamlMember.Setter = set_26_InfoBar_IsOpen;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.Severity":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Severity", "Microsoft.UI.Xaml.Controls.InfoBarSeverity");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_26_InfoBar_Severity;
-                xamlMember.Setter = set_26_InfoBar_Severity;
+                xamlMember.Getter = get_27_InfoBar_Severity;
+                xamlMember.Setter = set_27_InfoBar_Severity;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.IsClosable":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "IsClosable", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_27_InfoBar_IsClosable;
-                xamlMember.Setter = set_27_InfoBar_IsClosable;
+                xamlMember.Getter = get_28_InfoBar_IsClosable;
+                xamlMember.Setter = set_28_InfoBar_IsClosable;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.ActionButton":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ActionButton", "Microsoft.UI.Xaml.Controls.Primitives.ButtonBase");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_28_InfoBar_ActionButton;
-                xamlMember.Setter = set_28_InfoBar_ActionButton;
+                xamlMember.Getter = get_29_InfoBar_ActionButton;
+                xamlMember.Setter = set_29_InfoBar_ActionButton;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonCommand":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "CloseButtonCommand", "System.Windows.Input.ICommand");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_29_InfoBar_CloseButtonCommand;
-                xamlMember.Setter = set_29_InfoBar_CloseButtonCommand;
+                xamlMember.Getter = get_30_InfoBar_CloseButtonCommand;
+                xamlMember.Setter = set_30_InfoBar_CloseButtonCommand;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonCommandParameter":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "CloseButtonCommandParameter", "Object");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_30_InfoBar_CloseButtonCommandParameter;
-                xamlMember.Setter = set_30_InfoBar_CloseButtonCommandParameter;
+                xamlMember.Getter = get_31_InfoBar_CloseButtonCommandParameter;
+                xamlMember.Setter = set_31_InfoBar_CloseButtonCommandParameter;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.CloseButtonStyle":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "CloseButtonStyle", "Microsoft.UI.Xaml.Style");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_31_InfoBar_CloseButtonStyle;
-                xamlMember.Setter = set_31_InfoBar_CloseButtonStyle;
+                xamlMember.Getter = get_32_InfoBar_CloseButtonStyle;
+                xamlMember.Setter = set_32_InfoBar_CloseButtonStyle;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.ContentTemplate":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "ContentTemplate", "Microsoft.UI.Xaml.DataTemplate");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_32_InfoBar_ContentTemplate;
-                xamlMember.Setter = set_32_InfoBar_ContentTemplate;
+                xamlMember.Getter = get_33_InfoBar_ContentTemplate;
+                xamlMember.Setter = set_33_InfoBar_ContentTemplate;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.IconSource":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "IconSource", "Microsoft.UI.Xaml.Controls.IconSource");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_33_InfoBar_IconSource;
-                xamlMember.Setter = set_33_InfoBar_IconSource;
+                xamlMember.Getter = get_34_InfoBar_IconSource;
+                xamlMember.Setter = set_34_InfoBar_IconSource;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.IsIconVisible":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "IsIconVisible", "Boolean");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_34_InfoBar_IsIconVisible;
-                xamlMember.Setter = set_34_InfoBar_IsIconVisible;
+                xamlMember.Getter = get_35_InfoBar_IsIconVisible;
+                xamlMember.Setter = set_35_InfoBar_IsIconVisible;
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.TemplateSettings":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "TemplateSettings", "Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_35_InfoBar_TemplateSettings;
+                xamlMember.Getter = get_36_InfoBar_TemplateSettings;
                 xamlMember.SetIsReadOnly();
                 break;
             case "Microsoft.UI.Xaml.Controls.InfoBar.Title":
                 userType = (global::TableNotes.TableNotes_XamlTypeInfo.XamlUserType)GetXamlTypeByName("Microsoft.UI.Xaml.Controls.InfoBar");
                 xamlMember = new global::TableNotes.TableNotes_XamlTypeInfo.XamlMember(this, "Title", "String");
                 xamlMember.SetIsDependencyProperty();
-                xamlMember.Getter = get_36_InfoBar_Title;
-                xamlMember.Setter = set_36_InfoBar_Title;
+                xamlMember.Getter = get_37_InfoBar_Title;
+                xamlMember.Setter = set_37_InfoBar_Title;
                 break;
             }
             return xamlMember;

@@ -14,13 +14,20 @@ public class ExcelService
     public string PageName => _pageName;
     public string DataDirectory => _dataDir;
 
-    public ExcelService(string pageName = "")
+    public ExcelService(string pageName = "", string? dataDir = null)
     {
         _pageName = pageName;
-        var baseDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "TableNotes");
-        _dataDir = string.IsNullOrEmpty(pageName) ? baseDir : Path.Combine(baseDir, pageName);
+        if (dataDir is not null)
+        {
+            _dataDir = dataDir;
+        }
+        else
+        {
+            var baseDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TableNotes");
+            _dataDir = string.IsNullOrEmpty(pageName) ? baseDir : Path.Combine(baseDir, pageName);
+        }
         Directory.CreateDirectory(_dataDir);
         _indexPath = Path.Combine(_dataDir, "notes.json");
     }
@@ -97,6 +104,10 @@ public class ExcelService
                     Col5 = row.Cell(5).GetString(),
                     Col6 = columnCount >= 6 ? row.Cell(6).GetString() : string.Empty,
                     Col7 = columnCount >= 7 ? row.Cell(7).GetString() : string.Empty,
+                    Col8 = columnCount >= 8 ? row.Cell(8).GetString() : string.Empty,
+                    Col9 = columnCount >= 9 ? row.Cell(9).GetString() : string.Empty,
+                    Col10 = columnCount >= 10 ? row.Cell(10).GetString() : string.Empty,
+                    Col11 = columnCount >= 11 ? row.Cell(11).GetString() : string.Empty,
                 };
                 rows.Add(r);
             }
@@ -108,6 +119,9 @@ public class ExcelService
     private static string[] GetHeaders(string pageName) => pageName switch
     {
         "Checklist" => ["String ID", "Source", "Steps to Reproduce", "French", "Italian", "German", "Spanish"],
+        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish"],
+        "Changelog" => ["#", "Tester", "Date", "Type", "Description", "String ID", "Source", "Actual Result", "Expected Result", "Status"],
+        "TextFiles" => ["String ID", "Source", "French", "Italian", "German", "Spanish"],
         _ => ["Column 1", "Column 2", "Column 3", "Column 4", "Column 5"]
     };
 
@@ -133,6 +147,10 @@ public class ExcelService
                 ws.Cell(i + 2, 5).Value = rows[i].Col5;
                 ws.Cell(i + 2, 6).Value = rows[i].Col6;
                 ws.Cell(i + 2, 7).Value = rows[i].Col7;
+                if (headers.Length >= 8) ws.Cell(i + 2, 8).Value = rows[i].Col8;
+                if (headers.Length >= 9) ws.Cell(i + 2, 9).Value = rows[i].Col9;
+                if (headers.Length >= 10) ws.Cell(i + 2, 10).Value = rows[i].Col10;
+                if (headers.Length >= 11) ws.Cell(i + 2, 11).Value = rows[i].Col11;
             }
 
             ws.Columns().AdjustToContents();
