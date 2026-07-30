@@ -770,7 +770,6 @@ public sealed partial class NotePage : UserControl
             AutoGenerateColumns = false,
             ShowExportOptions = false,
             HeaderRowHeight = 32,
-            RowHeight = 40,
         };
 
         var wrapStyle = new Style(typeof(TextBlock));

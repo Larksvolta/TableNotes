@@ -152,6 +152,7 @@ public class ExcelService
             }
 
             ws.Columns().AdjustToContents();
+            ws.Rows().AdjustToContents(1, rows.Count + 1, 1, headers.Length);
             workbook.SaveAs(path);
         });
     }
