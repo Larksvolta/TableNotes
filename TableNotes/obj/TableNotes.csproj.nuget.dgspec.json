@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[8.4.2, )"
             },
+            "CommunityToolkit.WinUI.Controls.Segmented": {
+              "target": "Package",
+              "version": "[8.2.251219, )"
+            },
             "Microsoft.Windows.SDK.BuildTools": {
               "target": "Package",
               "version": "[10.0.26100.4948, )"

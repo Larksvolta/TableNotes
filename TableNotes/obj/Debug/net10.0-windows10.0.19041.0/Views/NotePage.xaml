@@ -13,7 +13,7 @@
 
     <Grid x:ConnectionId='2' x:Name="RootLayout">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="500"/>
             <ColumnDefinition Width="24"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>

@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -409,7 +410,7 @@ public sealed partial class NotePage : UserControl
         var headerGrid = new Grid { Height = 32 };
         headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
         headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
 
         var bold = Microsoft.UI.Text.FontWeights.SemiBold;
         var numHdr = new TextBlock { Text = "#", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0) };
@@ -436,7 +437,7 @@ public sealed partial class NotePage : UserControl
             if (isSelected) rowGrid.Background = selBrush;
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
 
             rowGrid.Children.Add(new TextBlock { Text = row.Col1, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis });
             var st = new TextBlock { Text = row.Col5, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis };
@@ -635,28 +636,44 @@ public sealed partial class NotePage : UserControl
     private static FrameworkElement BuildStatusPanel(TableRow row)
     {
         var langVals = new[] { row.Col8, row.Col9, row.Col10, row.Col11 };
+        var langLabels = new[] { "FR", "IT", "DE", "ES" };
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
         var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
-        var transparent = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0));
 
-        var grid = new Grid { VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
-        for (int i = 0; i < 4; i++)
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        var segmented = new Segmented
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
 
         for (int i = 0; i < 4; i++)
         {
-            var border = new Border
+            var item = new SegmentedItem
             {
-                Margin = new Thickness(1),
-                CornerRadius = new CornerRadius(3),
-                Background = langVals[i] == "Affected" ? red : langVals[i] == "Not Affected" ? green : transparent,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Content = langLabels[i],
             };
-            Grid.SetColumn(border, i);
-            grid.Children.Add(border);
+            var bg = langVals[i] == "Affected" ? red : langVals[i] == "Not Affected" ? green : null;
+            if (bg is not null)
+                item.Background = bg;
+            segmented.Items.Add(item);
         }
-        return grid;
+
+        segmented.Loaded += (s, e) =>
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (segmented.ContainerFromIndex(i) is SegmentedItem container)
+                {
+                    container.CornerRadius = i switch
+                    {
+                        0 => new CornerRadius(4, 0, 0, 4),
+                        3 => new CornerRadius(0, 4, 4, 0),
+                        _ => new CornerRadius(0),
+                    };
+                }
+            }
+        };
+
+        return segmented;
     }
 
     private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -724,7 +741,7 @@ public sealed partial class NotePage : UserControl
     {
         _sidebarExpanded = !_sidebarExpanded;
 
-        RootLayout.ColumnDefinitions[0].Width = _sidebarExpanded ? new GridLength(400) : new GridLength(0);
+        RootLayout.ColumnDefinitions[0].Width = _sidebarExpanded ? new GridLength(500) : new GridLength(0);
 
         var vm = GetVm();
         if (vm is not null)

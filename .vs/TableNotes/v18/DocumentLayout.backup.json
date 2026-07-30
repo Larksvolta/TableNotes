@@ -3,28 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\services\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\services\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\models\\tablerow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\models\\tablerow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\views\\notepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\views\\notepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\services\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\services\\excelservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,79 +22,44 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ExcelService.cs",
               "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Services\\ExcelService.cs",
               "RelativeDocumentMoniker": "TableNotes\\Services\\ExcelService.cs",
               "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Services\\ExcelService.cs",
               "RelativeToolTip": "TableNotes\\Services\\ExcelService.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIAAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-18T23:18:01.866Z"
+              "WhenOpened": "2026-07-30T19:29:07.461Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\ViewModels\\MainViewModel.cs",
-              "RelativeDocumentMoniker": "TableNotes\\ViewModels\\MainViewModel.cs",
-              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\ViewModels\\MainViewModel.cs",
-              "RelativeToolTip": "TableNotes\\ViewModels\\MainViewModel.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-18T23:12:22.325Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TableRow.cs",
-              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Models\\TableRow.cs",
-              "RelativeDocumentMoniker": "TableNotes\\Models\\TableRow.cs",
-              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Models\\TableRow.cs",
-              "RelativeToolTip": "TableNotes\\Models\\TableRow.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-18T23:12:09.281Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "TableNotes\\MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\MainWindow.xaml.cs",
               "RelativeToolTip": "TableNotes\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-18T23:11:40.612Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\App.xaml",
-              "RelativeDocumentMoniker": "TableNotes\\App.xaml",
-              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\App.xaml",
-              "RelativeToolTip": "TableNotes\\App.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-18T23:11:30.006Z"
+              "WhenOpened": "2026-07-30T19:25:31.028Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "TableNotes\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\MainWindow.xaml",
-              "RelativeToolTip": "TableNotes\\MainWindow.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "NotePage.xaml",
+              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\NotePage.xaml",
+              "RelativeDocumentMoniker": "TableNotes\\Views\\NotePage.xaml",
+              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\NotePage.xaml",
+              "RelativeToolTip": "TableNotes\\Views\\NotePage.xaml",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-07-18T23:11:06.187Z",
+              "WhenOpened": "2026-07-30T19:25:00.894Z",
               "EditorCaption": ""
             }
           ]
