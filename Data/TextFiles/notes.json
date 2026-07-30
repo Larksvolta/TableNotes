@@ -1,0 +1,20 @@
+[
+  {
+    "Id": "4b960362-380b-4ba1-a9e3-a3fd2bdcf0f6",
+    "Title": "Dialogue.xlsx",
+    "CreatedAt": "2026-07-30T01:03:46.8012113+02:00",
+    "ModifiedAt": "2026-07-30T01:03:46.8012158+02:00",
+    "FileName": "Dialogue.xlsx",
+    "Category": "General",
+    "IsPlaceholder": false
+  },
+  {
+    "Id": "9b65ccdb-a7fd-47f0-b95a-955bbf4e8077",
+    "Title": "UI.xlsx",
+    "CreatedAt": "2026-07-30T01:03:46.8021237+02:00",
+    "ModifiedAt": "2026-07-30T01:03:46.8021275+02:00",
+    "FileName": "UI.xlsx",
+    "Category": "General",
+    "IsPlaceholder": false
+  }
+]

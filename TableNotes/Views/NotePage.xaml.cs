@@ -27,8 +27,7 @@ public sealed partial class NotePage : UserControl
     private readonly Dictionary<TableRow, HashSet<string>> _yellowCells = new();
     private static readonly Dictionary<string, string> _savedMarkings = new();
     private static readonly string _markingsPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "TableNotes", "cell_markings.json");
+        Services.DataPaths.BasePath, "cell_markings.json");
     private readonly Dictionary<TableRow, HashSet<string>> _diffCells = new();
     private bool _diffVisualsPending;
     private bool _rowsCleared;

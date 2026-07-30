@@ -23,9 +23,7 @@ public class ExcelService
         }
         else
         {
-            var baseDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "TableNotes");
+            var baseDir = DataPaths.BasePath;
             _dataDir = string.IsNullOrEmpty(pageName) ? baseDir : Path.Combine(baseDir, pageName);
         }
         Directory.CreateDirectory(_dataDir);

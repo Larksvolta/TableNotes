@@ -104,8 +104,7 @@ public partial class NotePageViewModel : ObservableObject
     }
 
     private static string MasterTextsDirectory => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "TableNotes", "MasterTexts");
+        Services.DataPaths.BasePath, "MasterTexts");
 
     private async Task<List<TableRow>> LoadRowsFromMasterAsync(string fileName)
     {
@@ -155,9 +154,7 @@ public partial class NotePageViewModel : ObservableObject
 
         if (PageName == "TextFiles")
         {
-            var masterDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "TableNotes", "MasterTexts");
+            var masterDir = MasterTextsDirectory;
 
             if (!Directory.Exists(masterDir))
                 return;
