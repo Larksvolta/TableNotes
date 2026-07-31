@@ -106,6 +106,7 @@ public class ExcelService
                     Col9 = columnCount >= 9 ? row.Cell(9).GetString() : string.Empty,
                     Col10 = columnCount >= 10 ? row.Cell(10).GetString() : string.Empty,
                     Col11 = columnCount >= 11 ? row.Cell(11).GetString() : string.Empty,
+                    Col12 = columnCount >= 12 ? row.Cell(12).GetString() : string.Empty,
                 };
                 rows.Add(r);
             }
@@ -117,7 +118,7 @@ public class ExcelService
     private static string[] GetHeaders(string pageName) => pageName switch
     {
         "Checklist" => ["String ID", "Source", "Steps to Reproduce", "French", "Italian", "German", "Spanish"],
-        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish"],
+        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish", "Bug Status"],
         "Changelog" => ["#", "Tester", "Date", "Type", "Description", "String ID", "Source", "Actual Result", "Expected Result", "Status"],
         "TextFiles" => ["String ID", "Source", "French", "Italian", "German", "Spanish"],
         _ => ["Column 1", "Column 2", "Column 3", "Column 4", "Column 5"]
@@ -149,6 +150,7 @@ public class ExcelService
                 if (headers.Length >= 9) ws.Cell(i + 2, 9).Value = rows[i].Col9;
                 if (headers.Length >= 10) ws.Cell(i + 2, 10).Value = rows[i].Col10;
                 if (headers.Length >= 11) ws.Cell(i + 2, 11).Value = rows[i].Col11;
+                if (headers.Length >= 12) ws.Cell(i + 2, 12).Value = rows[i].Col12;
             }
 
             ws.Columns().AdjustToContents();

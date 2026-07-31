@@ -33,18 +33,31 @@ public sealed partial class NotePage : UserControl
     private bool _rowsCleared;
     private readonly Dictionary<(string NoteFileName, string RowNumber), (Guid NoteId, int RowIndex, string ColumnProp, TableNote ChangelogNote)> _changelogRevertMap = new();
     private readonly Dictionary<(Guid NoteId, int RowIndex, string ColumnProp), (TableRow ChangelogRow, TableNote ChangelogNote)> _changelogReverseMap = new();
-    private int _selectedBugIndex = -1;
+    private TableRow? _selectedBugRow;
     private ComboBox? _bugFormType;
+    private Segmented? _bugFormStatusSelector;
     private TextBox? _bugFormSummary;
     private TextBox? _bugFormDesc;
     private TextBox? _bugFormSteps;
-    private ComboBox? _bugFormFrench;
-    private ComboBox? _bugFormItalian;
-    private ComboBox? _bugFormGerman;
-    private ComboBox? _bugFormSpanish;
+    private Segmented? _bugFormFrench;
+    private Segmented? _bugFormItalian;
+    private Segmented? _bugFormGerman;
+    private Segmented? _bugFormSpanish;
     private TextBlock? _bugFormId;
     private TextBlock? _bugFormUsername;
     private TextBlock? _bugFormDate;
+
+    private string _bugSortColumn = "Col1";
+    private bool _bugSortAscending = true;
+    private string _bugFilterText = string.Empty;
+    private string _bugQuickSearchText = string.Empty;
+    private HashSet<string> _bugStatusFilterSet = new();
+    private HashSet<string> _summaryFilterSet = new();
+    private TextBlock? _numSortArrow;
+    private TextBlock? _summarySortArrow;
+    private TextBlock? _bugStatusSortArrow;
+    private StackPanel? _bugItemsPanel;
+    private Grid? _bugHeaderGrid;
 
     static NotePage()
     {
@@ -127,6 +140,7 @@ public sealed partial class NotePage : UserControl
             new("Italian", "Col9"),
             new("German", "Col10"),
             new("Spanish", "Col11"),
+            new("Bug Status", "Col12"),
         ],
         "TextFiles" =>
         [
@@ -320,6 +334,8 @@ public sealed partial class NotePage : UserControl
                 MarkGreen(row, prop);
             }
         }
+
+        RebuildBugTrackerRows();
     }
 
     private void OnChangelogCellEditEnded(object? sender, TableViewCellEditEndedEventArgs e)
@@ -401,42 +417,149 @@ public sealed partial class NotePage : UserControl
     private void PopulateBugTrackerSidebar(NotePageViewModel vm)
     {
         BugTrackerSidebar.Children.Clear();
+        BugTrackerSidebar.RowDefinitions.Clear();
+        BugTrackerSidebar.ColumnDefinitions.Clear();
 
-        var root = new Grid();
-        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(32) });
-        root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-        var headerGrid = new Grid { Height = 32 };
-        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
-        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
-
-        var bold = Microsoft.UI.Text.FontWeights.SemiBold;
-        var numHdr = new TextBlock { Text = "#", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0) };
-        headerGrid.Children.Add(numHdr);
-        var summaryHdr = new TextBlock { Text = "Summary", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0) };
-        Grid.SetColumn(summaryHdr, 1);
-        headerGrid.Children.Add(summaryHdr);
-        var statusHdr = new TextBlock { Text = "Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(2, 0, 4, 0) };
-        Grid.SetColumn(statusHdr, 2);
-        headerGrid.Children.Add(statusHdr);
-        headerGrid.Children.Add(new Border { Height = 1, VerticalAlignment = VerticalAlignment.Bottom, Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
-        root.Children.Add(headerGrid);
-
-        var selBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0x00, 0x78, 0xD7));
-        var itemsPanel = new StackPanel();
-
-        for (int i = 0; i < vm.Rows.Count; i++)
+        var quickSearch = new TextBox
         {
-            var row = vm.Rows[i];
-            var idx = i;
-            var isSelected = i == _selectedBugIndex;
+            PlaceholderText = "Quick Search",
+            Text = _bugQuickSearchText,
+            Margin = new Thickness(0, 0, 0, 6),
+        };
+        quickSearch.TextChanged += (_, _) =>
+        {
+            _bugQuickSearchText = quickSearch.Text ?? "";
+            RebuildBugTrackerRows();
+        };
+        Grid.SetRow(quickSearch, 0);
+        BugTrackerSidebar.Children.Add(quickSearch);
 
-            var rowGrid = new Grid { Height = 40 };
-            if (isSelected) rowGrid.Background = selBrush;
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) });
+        _bugHeaderGrid = BuildSortableHeader(_bugSortColumn, _bugSortAscending);
+        Grid.SetRow(_bugHeaderGrid, 1);
+        BugTrackerSidebar.Children.Add(_bugHeaderGrid);
+
+        var scroll = new ScrollViewer
+        {
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+        };
+        _bugItemsPanel = new StackPanel();
+        scroll.Content = _bugItemsPanel;
+        Grid.SetRow(scroll, 2);
+        BugTrackerSidebar.Children.Add(scroll);
+
+        RebuildBugTrackerRows();
+    }
+
+    private void ToggleSort(string column)
+    {
+        if (_bugSortColumn == column)
+            _bugSortAscending = !_bugSortAscending;
+        else
+        {
+            _bugSortColumn = column;
+            _bugSortAscending = true;
+        }
+        UpdateSortIndicators();
+        RebuildBugTrackerRows();
+    }
+
+    private void UpdateSortIndicators()
+    {
+        SetArrow(_numSortArrow, _bugSortColumn == "Col1");
+        SetArrow(_summarySortArrow, _bugSortColumn == "Col5");
+        SetArrow(_bugStatusSortArrow, _bugSortColumn == "Col12");
+    }
+
+    private void SetArrow(TextBlock? arrow, bool isActive)
+    {
+        if (arrow is null) return;
+        if (isActive)
+        {
+            arrow.Text = _bugSortAscending ? "\u2191" : "\u2193";
+            arrow.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            arrow.Text = "";
+            arrow.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void RebuildBugTrackerRows()
+    {
+        var vm = GetVm();
+        if (vm?.PageName != "BugTracker" || _bugItemsPanel is null) return;
+
+        _bugItemsPanel.Children.Clear();
+
+        var filtered = vm.Rows.AsEnumerable();
+
+        if (!string.IsNullOrEmpty(_bugQuickSearchText))
+        {
+            var terms = _bugQuickSearchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            filtered = filtered.Where(row =>
+            {
+                var haystack = string.Join(" ", new[]
+                {
+                    row.Col1, row.Col2, row.Col3, row.Col4, row.Col5,
+                    row.Col6, row.Col7, row.Col8, row.Col9, row.Col10,
+                    row.Col11, row.Col12,
+                });
+                return terms.All(t => haystack.Contains(t, StringComparison.OrdinalIgnoreCase));
+            });
+        }
+
+        if (_summaryFilterSet.Count > 0)
+        {
+            filtered = filtered.Where(row =>
+                !string.IsNullOrEmpty(row.Col5) && _summaryFilterSet.Contains(row.Col5));
+        }
+
+        if (_bugStatusFilterSet.Count > 0)
+        {
+            filtered = filtered.Where(row =>
+                !string.IsNullOrEmpty(row.Col12) && _bugStatusFilterSet.Contains(row.Col12));
+        }
+
+        if (!string.IsNullOrEmpty(_bugSortColumn))
+        {
+            filtered = _bugSortColumn switch
+            {
+                "Col1" => _bugSortAscending
+                    ? filtered.OrderBy(row => int.TryParse(row.Col1, out var n) ? n : 0)
+                    : filtered.OrderByDescending(row => int.TryParse(row.Col1, out var n) ? n : 0),
+                "Col5" => _bugSortAscending
+                    ? filtered.OrderBy(row => row.Col5 ?? "")
+                    : filtered.OrderByDescending(row => row.Col5 ?? ""),
+                "Col12" => _bugSortAscending
+                    ? filtered.OrderBy(row => row.Col12 ?? "")
+                    : filtered.OrderByDescending(row => row.Col12 ?? ""),
+                _ => filtered
+            };
+        }
+
+        var list = filtered.ToList();
+        for (int i = 0; i < list.Count; i++)
+        {
+            var row = list[i];
+
+            var rowGrid = new Grid { Height = 40, Margin = new Thickness(1, 0, 1, 0) };
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(42) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var selBorder = new Border();
+            if (ReferenceEquals(row, _selectedBugRow))
+                selBorder.Background = GetBugStatusColor(row.Col12);
+            Grid.SetColumnSpan(selBorder, 3);
+            rowGrid.Children.Add(selBorder);
 
             rowGrid.Children.Add(new TextBlock { Text = row.Col1, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis });
             var st = new TextBlock { Text = row.Col5, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis };
@@ -447,25 +570,281 @@ public sealed partial class NotePage : UserControl
             Grid.SetColumn(sp, 2);
             rowGrid.Children.Add(sp);
 
-            rowGrid.PointerPressed += (_, _) => OnBugSelected(idx);
-            itemsPanel.Children.Add(rowGrid);
+            var langSep = new Border
+            {
+                Width = 1,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
+            };
+            Grid.SetColumn(langSep, 3);
+            rowGrid.Children.Add(langSep);
+
+            var langPanel = BuildLanguagePanel(row);
+            Grid.SetColumn(langPanel, 4);
+            rowGrid.Children.Add(langPanel);
+
+            rowGrid.PointerPressed += (_, _) => OnBugSelected(row);
+            _bugItemsPanel.Children.Add(rowGrid);
         }
-
-        var scroller = new ScrollViewer { Content = itemsPanel };
-        Grid.SetRow(scroller, 1);
-        root.Children.Add(scroller);
-
-        AlignSidebarWithTable(root);
-        BugTrackerSidebar.Children.Add(root);
     }
 
-    private void OnBugSelected(int index)
+    private Grid BuildSortableHeader(string sortedColumn, bool sortAscending)
+    {
+        var header = new Grid
+        {
+            Height = 32,
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = new GridLength(42) },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(110) },
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+            },
+            Margin = new Thickness(0, 0, 0, 6)
+        };
+
+        var bold = Microsoft.UI.Text.FontWeights.SemiBold;
+
+        static Button MakeFilterBtn(string tag)
+        {
+            var btn = new Button
+            {
+                Content = "\u2026",
+                FontSize = 16,
+                Width = 20,
+                Height = 20,
+                Padding = new Thickness(0),
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(2, 0, 0, 0),
+                Tag = tag,
+            };
+            btn.Tapped += (_, e) => e.Handled = true;
+            return btn;
+        }
+
+        var numHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        numHeader.Children.Add(new TextBlock { Text = "#", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
+        _numSortArrow = new TextBlock { Text = sortedColumn == "Col1" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+        numHeader.Children.Add(_numSortArrow);
+        numHeader.Tapped += (_, _) => ToggleSort("Col1");
+        header.Children.Add(numHeader);
+
+        var summaryHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        summaryHeader.Children.Add(new TextBlock { Text = "Summary", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
+        _summarySortArrow = new TextBlock { Text = sortedColumn == "Col5" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+        summaryHeader.Children.Add(_summarySortArrow);
+        var summaryFilterBtn = MakeFilterBtn("Summary");
+        summaryFilterBtn.Click += (_, _) => BuildFilterPopup(summaryFilterBtn);
+        summaryHeader.Children.Add(summaryFilterBtn);
+        summaryHeader.Tapped += (_, _) => ToggleSort("Col5");
+        Grid.SetColumn(summaryHeader, 1);
+        header.Children.Add(summaryHeader);
+
+        var statusHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        statusHeader.Children.Add(new TextBlock { Text = "Bug Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
+        _bugStatusSortArrow = new TextBlock { Text = sortedColumn == "Col12" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+        statusHeader.Children.Add(_bugStatusSortArrow);
+        var statusFilterBtn = MakeFilterBtn("Status");
+        statusFilterBtn.Click += (_, _) => BuildFilterPopup(statusFilterBtn);
+        statusHeader.Children.Add(statusFilterBtn);
+        statusHeader.Tapped += (_, _) => ToggleSort("Col12");
+        Grid.SetColumn(statusHeader, 2);
+        header.Children.Add(statusHeader);
+
+        var langSep = new Border
+        {
+            Width = 1,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
+        };
+        Grid.SetColumn(langSep, 3);
+        header.Children.Add(langSep);
+
+        var langHeader = new TextBlock { Text = "Language Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+        Grid.SetColumn(langHeader, 4);
+        header.Children.Add(langHeader);
+
+        return header;
+    }
+
+    private void BuildFilterPopup(FrameworkElement target)
+    {
+        var vm = GetVm();
+        if (vm?.PageName != "BugTracker") return;
+
+        var isSummary = target.Tag as string == "Summary";
+        var prop = isSummary ? "Col5" : "Col12";
+        var filterSet = isSummary ? _summaryFilterSet : _bugStatusFilterSet;
+
+        var values = vm.Rows.Select(r => r.GetType().GetProperty(prop)?.GetValue(r) as string)
+            .Where(s => !string.IsNullOrEmpty(s)).Select(s => s!).Distinct().OrderBy(s => s).ToList();
+        if (values.Count == 0)
+            values = new List<string> { "Ready to vet", "Approved", "Reporting", "Uploaded", "Not a bug", "Duplicate" };
+
+        var popup = new StackPanel { Spacing = 4, Padding = new Thickness(12), Width = 250 };
+
+        Button MakeSortItem(string text, bool ascending)
+        {
+            var b = new Button
+            {
+                Content = text,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(4, 2, 4, 2),
+            };
+            b.Click += (_, _) =>
+            {
+                _bugSortColumn = prop;
+                _bugSortAscending = ascending;
+                UpdateSortIndicators();
+                RebuildBugTrackerRows();
+            };
+            return b;
+        }
+
+        popup.Children.Add(MakeSortItem("Sort Ascending", true));
+        popup.Children.Add(MakeSortItem("Sort Descending", false));
+
+        popup.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
+
+        var searchBox = new TextBox { PlaceholderText = "Search", Text = _bugFilterText };
+
+        var checkList = new StackPanel { Spacing = 2 };
+        var scroll = new ScrollViewer { MaxHeight = 220, Content = checkList, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+
+        void RefreshList()
+        {
+            checkList.Children.Clear();
+            var q = searchBox.Text?.Trim() ?? "";
+            foreach (var v in values.Where(v => string.IsNullOrEmpty(q) || v.Contains(q, StringComparison.OrdinalIgnoreCase)))
+            {
+                var cb = new CheckBox { Content = v, IsChecked = filterSet.Contains(v) };
+                var s = v;
+                cb.Checked += (_, _) => { filterSet.Add(s); RebuildBugTrackerRows(); };
+                cb.Unchecked += (_, _) => { filterSet.Remove(s); RebuildBugTrackerRows(); };
+                checkList.Children.Add(cb);
+            }
+        }
+
+        searchBox.TextChanged += (_, _) => RefreshList();
+        popup.Children.Add(searchBox);
+        popup.Children.Add(scroll);
+
+        var btnRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
+        var selectAllBtn = new Button { Content = "Select All" };
+        selectAllBtn.Click += (_, _) =>
+        {
+            foreach (var v in values) filterSet.Add(v);
+            RefreshList();
+            RebuildBugTrackerRows();
+        };
+        var clearBtn = new Button { Content = "Clear" };
+        clearBtn.Click += (_, _) =>
+        {
+            filterSet.Clear();
+            RefreshList();
+            RebuildBugTrackerRows();
+        };
+        btnRow.Children.Add(selectAllBtn);
+        btnRow.Children.Add(clearBtn);
+        popup.Children.Add(btnRow);
+
+        RefreshList();
+
+        var flyout = new Flyout { Content = popup };
+        flyout.ShowAt(target);
+    }
+
+    private StackPanel BuildBugStatusSelector()
+    {
+        var panel = new StackPanel { Spacing = 4, Margin = new Thickness(0, 8, 0, 0) };
+
+        var label = new TextBlock { Text = "Bug Status", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) };
+        panel.Children.Add(label);
+
+        var statuses = new[] { "Ready to vet", "Approved", "Reporting", "Uploaded", "Not a bug", "Duplicate" };
+        _bugFormStatusSelector = new Segmented { HorizontalAlignment = HorizontalAlignment.Stretch };
+
+        foreach (var status in statuses)
+        {
+            var item = new SegmentedItem { Content = status };
+            var s = status;
+            item.Tapped += (_, _) =>
+            {
+                if (_selectedBugRow is null) return;
+                _selectedBugRow.Col12 = s;
+                _bugFormStatusSelector.SelectedIndex = Array.IndexOf(statuses, s);
+                RebuildBugTrackerRows();
+            };
+            _bugFormStatusSelector.Items.Add(item);
+        }
+
+        panel.Children.Add(_bugFormStatusSelector);
+        return panel;
+    }
+
+    private StackPanel BuildBugStatusSegmented()
+    {
+        var panel = new StackPanel { Spacing = 4, Margin = new Thickness(0, 8, 0, 0) };
+
+        var label = new TextBlock { Text = "Filter Bugs", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) };
+        panel.Children.Add(label);
+
+        var segments = new Segmented { HorizontalAlignment = HorizontalAlignment.Stretch };
+
+        var allItem = new SegmentedItem { Content = "All" };
+        allItem.Tapped += (_, _) => { _bugStatusFilterSet.Clear(); RebuildBugTrackerRows(); };
+        segments.Items.Add(allItem);
+
+        var openItem = new SegmentedItem { Content = "Open" };
+        openItem.Tapped += (_, _) =>
+        {
+            _bugStatusFilterSet.Clear();
+            _bugStatusFilterSet.Add("Ready to vet");
+            _bugStatusFilterSet.Add("Approved");
+            _bugStatusFilterSet.Add("Reporting");
+            _bugStatusFilterSet.Add("Uploaded");
+            RebuildBugTrackerRows();
+        };
+        segments.Items.Add(openItem);
+
+        var closedItem = new SegmentedItem { Content = "Closed" };
+        closedItem.Tapped += (_, _) =>
+        {
+            _bugStatusFilterSet.Clear();
+            _bugStatusFilterSet.Add("Not a bug");
+            _bugStatusFilterSet.Add("Duplicate");
+            RebuildBugTrackerRows();
+        };
+        segments.Items.Add(closedItem);
+
+        panel.Children.Add(segments);
+        return panel;
+    }
+
+    private void OnBugSelected(TableRow row)
     {
         var vm = GetVm();
         if (vm is null) return;
-        _selectedBugIndex = index;
+        _selectedBugRow = row;
         PopulateBugTrackerSidebar(vm);
-        PopulateBugForm(index < vm.Rows.Count ? vm.Rows[index] : null);
+        PopulateBugForm(row);
+    }
+
+    private static void SetLangSegmented(Segmented seg, string? value)
+    {
+        var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
+        var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
+        for (int i = 0; i < seg.Items.Count; i++)
+        {
+            if (seg.Items[i] is SegmentedItem item)
+                item.Background = (i == 0 && value == "Not Affected") ? green : (i == 1 && value == "Affected") ? red : null;
+        }
+        seg.SelectedIndex = value == "Affected" ? 1 : value == "Not Affected" ? 0 : -1;
     }
 
     private void PopulateBugForm(TableRow? row)
@@ -479,10 +858,10 @@ public sealed partial class NotePage : UserControl
             _bugFormSummary!.Text = "";
             _bugFormDesc!.Text = "";
             _bugFormSteps!.Text = "";
-            _bugFormFrench!.SelectedIndex = -1;
-            _bugFormItalian!.SelectedIndex = -1;
-            _bugFormGerman!.SelectedIndex = -1;
-            _bugFormSpanish!.SelectedIndex = -1;
+            SetLangSegmented(_bugFormFrench!, null);
+            SetLangSegmented(_bugFormItalian!, null);
+            SetLangSegmented(_bugFormGerman!, null);
+            SetLangSegmented(_bugFormSpanish!, null);
             return;
         }
 
@@ -493,26 +872,27 @@ public sealed partial class NotePage : UserControl
         _bugFormSummary!.Text = row.Col5;
         _bugFormDesc!.Text = row.Col6;
         _bugFormSteps!.Text = row.Col7;
-        _bugFormFrench!.SelectedItem = row.Col8;
-        _bugFormItalian!.SelectedItem = row.Col9;
-        _bugFormGerman!.SelectedItem = row.Col10;
-        _bugFormSpanish!.SelectedItem = row.Col11;
+        _bugFormStatusSelector!.SelectedIndex = Array.IndexOf(new[] { "Ready to vet", "Approved", "Reporting", "Uploaded", "Not a bug", "Duplicate" }, row.Col12);
+        SetLangSegmented(_bugFormFrench!, row.Col8);
+        SetLangSegmented(_bugFormItalian!, row.Col9);
+        SetLangSegmented(_bugFormGerman!, row.Col10);
+        SetLangSegmented(_bugFormSpanish!, row.Col11);
     }
 
     private async Task SaveBugForm()
     {
         var vm = GetVm();
-        if (vm is null || _selectedBugIndex < 0 || _selectedBugIndex >= vm.Rows.Count) return;
+        if (vm is null || _selectedBugRow is null) return;
 
-        var row = vm.Rows[_selectedBugIndex];
+        var row = _selectedBugRow;
         row.Col4 = _bugFormType?.SelectedItem as string ?? "";
         row.Col5 = _bugFormSummary?.Text ?? "";
         row.Col6 = _bugFormDesc?.Text ?? "";
         row.Col7 = _bugFormSteps?.Text ?? "";
-        row.Col8 = _bugFormFrench?.SelectedItem as string ?? "";
-        row.Col9 = _bugFormItalian?.SelectedItem as string ?? "";
-        row.Col10 = _bugFormGerman?.SelectedItem as string ?? "";
-        row.Col11 = _bugFormSpanish?.SelectedItem as string ?? "";
+        row.Col8 = _bugFormFrench?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
+        row.Col9 = _bugFormItalian?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
+        row.Col10 = _bugFormGerman?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
+        row.Col11 = _bugFormSpanish?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
 
         var note = vm.SelectedNote;
         if (note is not null)
@@ -529,7 +909,6 @@ public sealed partial class NotePage : UserControl
         TableViewContainer.Children.Clear();
 
         var typeOptions = new[] { "Grammar", "Spelling", "Missing Translation", "Inconsistent Translation", "Glossary", "Incorrect Translation", "Shortening", "Compliance" };
-        var langOptions = new[] { "Not Affected", "Affected" };
 
         var scroller = new ScrollViewer();
         var form = new StackPanel { Spacing = 8, Margin = new Thickness(12, 0, 12, 12) };
@@ -583,24 +962,40 @@ public sealed partial class NotePage : UserControl
         var langRow1 = new Grid { ColumnSpacing = 16 };
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormFrench = new ComboBox { Header = "French", ItemsSource = langOptions, MinWidth = 200 };
-        _bugFormItalian = new ComboBox { Header = "Italian", ItemsSource = langOptions, MinWidth = 200 };
-        Grid.SetColumn(_bugFormFrench, 0);
-        langRow1.Children.Add(_bugFormFrench);
-        Grid.SetColumn(_bugFormItalian, 1);
-        langRow1.Children.Add(_bugFormItalian);
+        _bugFormFrench = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        _bugFormItalian = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        var frenchPanel = new StackPanel { Spacing = 4 };
+        frenchPanel.Children.Add(new TextBlock { Text = "French", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        frenchPanel.Children.Add(_bugFormFrench);
+        Grid.SetColumn(frenchPanel, 0);
+        langRow1.Children.Add(frenchPanel);
+        var italianPanel = new StackPanel { Spacing = 4 };
+        italianPanel.Children.Add(new TextBlock { Text = "Italian", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        italianPanel.Children.Add(_bugFormItalian);
+        Grid.SetColumn(italianPanel, 1);
+        langRow1.Children.Add(italianPanel);
         form.Children.Add(langRow1);
 
         var langRow2 = new Grid { ColumnSpacing = 16 };
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormGerman = new ComboBox { Header = "German", ItemsSource = langOptions, MinWidth = 200 };
-        _bugFormSpanish = new ComboBox { Header = "Spanish", ItemsSource = langOptions, MinWidth = 200 };
-        Grid.SetColumn(_bugFormGerman, 0);
-        langRow2.Children.Add(_bugFormGerman);
-        Grid.SetColumn(_bugFormSpanish, 1);
-        langRow2.Children.Add(_bugFormSpanish);
+        _bugFormGerman = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        _bugFormSpanish = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        var germanPanel = new StackPanel { Spacing = 4 };
+        germanPanel.Children.Add(new TextBlock { Text = "German", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        germanPanel.Children.Add(_bugFormGerman);
+        Grid.SetColumn(germanPanel, 0);
+        langRow2.Children.Add(germanPanel);
+        var spanishPanel = new StackPanel { Spacing = 4 };
+        spanishPanel.Children.Add(new TextBlock { Text = "Spanish", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        spanishPanel.Children.Add(_bugFormSpanish);
+        Grid.SetColumn(spanishPanel, 1);
+        langRow2.Children.Add(spanishPanel);
         form.Children.Add(langRow2);
+
+        form.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
+        form.Children.Add(BuildBugStatusSelector());
+        form.Children.Add(BuildBugStatusSegmented());
 
         var saveBtn = new Button
         {
@@ -632,46 +1027,54 @@ public sealed partial class NotePage : UserControl
         });
     }
 
+    private static SolidColorBrush GetBugStatusColor(string? status)
+    {
+        var c = status switch
+        {
+            "Ready to vet" => Windows.UI.Color.FromArgb(0x33, 0x00, 0x78, 0xD7),
+            "Approved" => Windows.UI.Color.FromArgb(0x33, 0xC8, 0xE6, 0xC9),
+            "Reporting" => Windows.UI.Color.FromArgb(0x33, 0xFF, 0x8C, 0x00),
+            "Uploaded" => Windows.UI.Color.FromArgb(0x33, 0xFF, 0xD7, 0x00),
+            "Not a bug" => Windows.UI.Color.FromArgb(0x33, 0x80, 0x80, 0x80),
+            "Duplicate" => Windows.UI.Color.FromArgb(0x33, 0xCC, 0x00, 0x00),
+            _ => Windows.UI.Color.FromArgb(0x33, 0x00, 0x78, 0xD7),
+        };
+        return new SolidColorBrush(c);
+    }
+
     private static FrameworkElement BuildStatusPanel(TableRow row)
+    {
+        var status = row.Col12 ?? "";
+        var tb = new TextBlock
+        {
+            Text = status,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(4, 0, 4, 0),
+            TextTrimming = TextTrimming.CharacterEllipsis,
+        };
+        return tb;
+    }
+
+    private static FrameworkElement BuildLanguagePanel(TableRow row)
     {
         var langVals = new[] { row.Col8, row.Col9, row.Col10, row.Col11 };
         var langLabels = new[] { "FR", "IT", "DE", "ES" };
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
         var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
 
-        var segmented = new Segmented
-        {
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-        };
-
+        var segmented = new Segmented { IsEnabled = false };
         for (int i = 0; i < 4; i++)
         {
             var item = new SegmentedItem
             {
-                Content = langLabels[i],
+                Content = new TextBlock { Text = langLabels[i], FontSize = 11 },
+                Padding = new Thickness(8, 2, 8, 2),
             };
             var bg = langVals[i] == "Affected" ? red : langVals[i] == "Not Affected" ? green : null;
             if (bg is not null)
                 item.Background = bg;
             segmented.Items.Add(item);
         }
-
-        segmented.Loaded += (s, e) =>
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (segmented.ContainerFromIndex(i) is SegmentedItem container)
-                {
-                    container.CornerRadius = i switch
-                    {
-                        0 => new CornerRadius(4, 0, 0, 4),
-                        3 => new CornerRadius(0, 4, 4, 0),
-                        _ => new CornerRadius(0),
-                    };
-                }
-            }
-        };
-
         return segmented;
     }
 
@@ -740,7 +1143,7 @@ public sealed partial class NotePage : UserControl
     {
         _sidebarExpanded = !_sidebarExpanded;
 
-        RootLayout.ColumnDefinitions[0].Width = _sidebarExpanded ? new GridLength(500) : new GridLength(0);
+        RootLayout.ColumnDefinitions[0].Width = _sidebarExpanded ? new GridLength(820) : new GridLength(0);
 
         var vm = GetVm();
         if (vm is not null)
