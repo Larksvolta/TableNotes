@@ -398,6 +398,7 @@ public sealed partial class NotePage : UserControl
             NotesList.Visibility = Visibility.Collapsed;
             NotesTree.Visibility = Visibility.Collapsed;
             BugTrackerSidebar.Visibility = _sidebarExpanded ? Visibility.Visible : Visibility.Collapsed;
+            SetSidebarWidth(_sidebarExpanded, bugTracker: true);
             PopulateBugTrackerSidebar(vm);
             vm.Rows.CollectionChanged += (_, _) => PopulateBugTrackerSidebar(vm);
             return;
@@ -405,6 +406,7 @@ public sealed partial class NotePage : UserControl
 
         NotesList.Visibility = vm.ShowTreeView ? Visibility.Collapsed : Visibility.Visible;
         NotesTree.Visibility = vm.ShowTreeView ? Visibility.Visible : Visibility.Collapsed;
+        SetSidebarWidth(_sidebarExpanded, bugTracker: false);
 
         if (vm.ShowTreeView)
         {
@@ -424,19 +426,32 @@ public sealed partial class NotePage : UserControl
         BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
+        var searchRow = new Grid
+        {
+            Margin = new Thickness(0, 0, 0, 6),
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = new GridLength(42) },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(110) },
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+            },
+        };
         var quickSearch = new TextBox
         {
             PlaceholderText = "Quick Search",
             Text = _bugQuickSearchText,
-            Margin = new Thickness(0, 0, 0, 6),
         };
         quickSearch.TextChanged += (_, _) =>
         {
             _bugQuickSearchText = quickSearch.Text ?? "";
             RebuildBugTrackerRows();
         };
-        Grid.SetRow(quickSearch, 0);
-        BugTrackerSidebar.Children.Add(quickSearch);
+        Grid.SetColumnSpan(quickSearch, 5);
+        searchRow.Children.Add(quickSearch);
+        Grid.SetRow(searchRow, 0);
+        BugTrackerSidebar.Children.Add(searchRow);
 
         _bugHeaderGrid = BuildSortableHeader(_bugSortColumn, _bugSortAscending);
         Grid.SetRow(_bugHeaderGrid, 1);
@@ -574,6 +589,7 @@ public sealed partial class NotePage : UserControl
             {
                 Width = 1,
                 VerticalAlignment = VerticalAlignment.Stretch,
+                Margin = new Thickness(0, 0, 8, 0),
                 Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
             };
             Grid.SetColumn(langSep, 3);
@@ -658,6 +674,7 @@ public sealed partial class NotePage : UserControl
         {
             Width = 1,
             VerticalAlignment = VerticalAlignment.Stretch,
+            Margin = new Thickness(0, 0, 8, 0),
             Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
         };
         Grid.SetColumn(langSep, 3);
@@ -1143,9 +1160,9 @@ public sealed partial class NotePage : UserControl
     {
         _sidebarExpanded = !_sidebarExpanded;
 
-        RootLayout.ColumnDefinitions[0].Width = _sidebarExpanded ? new GridLength(820) : new GridLength(0);
-
         var vm = GetVm();
+        SetSidebarWidth(_sidebarExpanded, vm?.IsBugTracker == true);
+
         if (vm is not null)
         {
             if (vm.IsBugTracker)
@@ -1160,6 +1177,13 @@ public sealed partial class NotePage : UserControl
         }
 
         ToggleBtn.Content = new SymbolIcon(_sidebarExpanded ? Symbol.OpenPane : Symbol.ClosePane);
+    }
+
+    private void SetSidebarWidth(bool expanded, bool bugTracker)
+    {
+        RootLayout.ColumnDefinitions[0].Width = expanded
+            ? (bugTracker ? new GridLength(820) : GridLength.Auto)
+            : new GridLength(0);
     }
 
     private void SetupTableView(NotePageViewModel vm)
