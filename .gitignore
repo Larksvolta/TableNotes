@@ -1,7 +1,0 @@
-# Build outputs
-bin/
-obj/
-
-# Runtime screenshot store
-Screenshots/
-Data/BugTracker/screenshots.json
