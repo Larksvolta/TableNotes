@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="RootLayout">
+    <Grid x:Name="RootLayout" Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="24"/>
@@ -74,10 +74,10 @@
             <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
                 <Button x:Name="NewNoteBtn" Command="{Binding NewNoteCommand}" Content="+" FontSize="18"
                         Width="36" Height="36" Padding="0"/>
-                <Button Command="{Binding SaveNoteCommand}" Content="Save"
+                <Button x:Name="SaveNoteBtn" Command="{Binding SaveNoteCommand}" Content="Save"
                         Style="{StaticResource AccentButtonStyle}"/>
                 <Button x:Name="DeleteNoteBtn" Command="{Binding DeleteNoteCommand}" Content="Delete"/>
-                <Button Command="{Binding AddRowCommand}" Content="Add Row"/>
+                <Button x:Name="AddRowBtn" Command="{Binding AddRowCommand}" Content="Add Row"/>
             </StackPanel>
 
             <InfoBar Grid.Row="3"

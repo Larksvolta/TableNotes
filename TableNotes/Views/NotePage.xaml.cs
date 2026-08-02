@@ -6,11 +6,15 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using TableNotes.Models;
 using TableNotes.ViewModels;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Markup;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using Windows.Storage;
 using WinUI.TableView;
 
 namespace TableNotes.Views;
@@ -46,6 +50,17 @@ public sealed partial class NotePage : UserControl
     private TextBlock? _bugFormId;
     private TextBlock? _bugFormUsername;
     private TextBlock? _bugFormDate;
+    private ItemsControl? _bugScreenshotsPreview;
+    private readonly List<string> _bugScreenshots = new();
+    private static readonly HashSet<string> _imageExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".tiff"
+    };
+    private static readonly string _bugScreenshotsDir = Path.Combine(
+        Path.GetFullPath(Path.Combine(Services.DataPaths.BasePath, "..")),
+        "Screenshots");
+    private readonly Services.ScreenshotStore _screenshotStore =
+        new(Path.Combine(Services.DataPaths.BasePath, "BugTracker"));
 
     private string _bugSortColumn = "Col1";
     private bool _bugSortAscending = true;
@@ -398,7 +413,9 @@ public sealed partial class NotePage : UserControl
             NotesList.Visibility = Visibility.Collapsed;
             NotesTree.Visibility = Visibility.Collapsed;
             BugTrackerSidebar.Visibility = _sidebarExpanded ? Visibility.Visible : Visibility.Collapsed;
-            SetSidebarWidth(_sidebarExpanded, bugTracker: true);
+            SaveNoteBtn.Visibility = Visibility.Collapsed;
+            AddRowBtn.Visibility = Visibility.Collapsed;
+            SetSidebarWidth(_sidebarExpanded);
             PopulateBugTrackerSidebar(vm);
             vm.Rows.CollectionChanged += (_, _) => PopulateBugTrackerSidebar(vm);
             return;
@@ -406,7 +423,9 @@ public sealed partial class NotePage : UserControl
 
         NotesList.Visibility = vm.ShowTreeView ? Visibility.Collapsed : Visibility.Visible;
         NotesTree.Visibility = vm.ShowTreeView ? Visibility.Visible : Visibility.Collapsed;
-        SetSidebarWidth(_sidebarExpanded, bugTracker: false);
+        SaveNoteBtn.Visibility = Visibility.Visible;
+        AddRowBtn.Visibility = Visibility.Visible;
+        SetSidebarWidth(_sidebarExpanded);
 
         if (vm.ShowTreeView)
         {
@@ -424,37 +443,33 @@ public sealed partial class NotePage : UserControl
 
         BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        BugTrackerSidebar.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-        var searchRow = new Grid
-        {
-            Margin = new Thickness(0, 0, 0, 6),
-            ColumnDefinitions =
-            {
-                new ColumnDefinition { Width = new GridLength(42) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = new GridLength(110) },
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-            },
-        };
+        var filterPanel = BuildBugStatusSegmented();
+        Grid.SetRow(filterPanel, 0);
+        BugTrackerSidebar.Children.Add(filterPanel);
+
+        var searchRow = new Grid { Margin = new Thickness(0, 0, 0, 6) };
         var quickSearch = new TextBox
         {
             PlaceholderText = "Quick Search",
             Text = _bugQuickSearchText,
+            Width = 617,
+            HorizontalAlignment = HorizontalAlignment.Left,
         };
         quickSearch.TextChanged += (_, _) =>
         {
             _bugQuickSearchText = quickSearch.Text ?? "";
             RebuildBugTrackerRows();
         };
-        Grid.SetColumnSpan(quickSearch, 5);
         searchRow.Children.Add(quickSearch);
-        Grid.SetRow(searchRow, 0);
+        Grid.SetRow(searchRow, 1);
         BugTrackerSidebar.Children.Add(searchRow);
 
         _bugHeaderGrid = BuildSortableHeader(_bugSortColumn, _bugSortAscending);
-        Grid.SetRow(_bugHeaderGrid, 1);
+        Grid.SetRow(_bugHeaderGrid, 2);
         BugTrackerSidebar.Children.Add(_bugHeaderGrid);
 
         var scroll = new ScrollViewer
@@ -464,8 +479,27 @@ public sealed partial class NotePage : UserControl
         };
         _bugItemsPanel = new StackPanel();
         scroll.Content = _bugItemsPanel;
-        Grid.SetRow(scroll, 2);
+        Grid.SetRow(scroll, 3);
         BugTrackerSidebar.Children.Add(scroll);
+
+        var footer = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            Spacing = 8,
+            Margin = new Thickness(0, 8, 0, 0),
+        };
+        var saveBtn = new Button
+        {
+            Content = "Save",
+            Style = (Style)Application.Current.Resources["AccentButtonStyle"],
+        };
+        saveBtn.SetBinding(Button.CommandProperty, new Binding { Path = new PropertyPath("SaveNoteCommand") });
+        footer.Children.Add(saveBtn);
+        var addRowBtn = new Button { Content = "Add Row" };
+        addRowBtn.SetBinding(Button.CommandProperty, new Binding { Path = new PropertyPath("AddRowCommand") });
+        footer.Children.Add(addRowBtn);
+        Grid.SetRow(footer, 4);
+        BugTrackerSidebar.Children.Add(footer);
 
         RebuildBugTrackerRows();
     }
@@ -565,10 +599,10 @@ public sealed partial class NotePage : UserControl
 
             var rowGrid = new Grid { Height = 40, Margin = new Thickness(1, 0, 1, 0) };
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(42) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(162) });
 
             var selBorder = new Border();
             if (ReferenceEquals(row, _selectedBugRow))
@@ -612,10 +646,10 @@ public sealed partial class NotePage : UserControl
             ColumnDefinitions =
             {
                 new ColumnDefinition { Width = new GridLength(42) },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(300) },
                 new ColumnDefinition { Width = new GridLength(110) },
                 new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(162) },
             },
             Margin = new Thickness(0, 0, 0, 6)
         };
@@ -804,14 +838,158 @@ public sealed partial class NotePage : UserControl
         return panel;
     }
 
+    private static Brush DefaultDropBorderBrush() =>
+        Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x66, 0, 0, 0));
+
+    private static Brush DefaultDropBackground() =>
+        Application.Current.Resources["ControlFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x0A, 0, 0, 0));
+
+    private StackPanel BuildScreenshotsSection()
+    {
+        try
+        {
+            if (!Directory.Exists(_bugScreenshotsDir))
+                Directory.CreateDirectory(_bugScreenshotsDir);
+        }
+        catch { }
+
+        var panel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 8, 0, 0) };
+
+        var label = new TextBlock { Text = "Screenshots", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
+        panel.Children.Add(label);
+
+        var dropZone = new Border
+        {
+            Height = 110,
+            AllowDrop = true,
+            CornerRadius = new CornerRadius(6),
+            BorderThickness = new Thickness(2),
+            BorderBrush = DefaultDropBorderBrush(),
+            Background = DefaultDropBackground(),
+            Child = new TextBlock
+            {
+                Text = "Drag and drop screenshots here",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Opacity = 0.6,
+            },
+        };
+
+        var accent = Application.Current.Resources["AccentFillColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x78, 0xD7));
+        var highlight = Application.Current.Resources["AccentFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x22, 0x00, 0x78, 0xD7));
+        var defaultBorder = DefaultDropBorderBrush();
+        var defaultBg = DefaultDropBackground();
+
+        dropZone.DragOver += (_, e) =>
+        {
+            if (_selectedBugRow is null)
+            {
+                e.AcceptedOperation = DataPackageOperation.None;
+                if (e.DragUIOverride is not null)
+                    e.DragUIOverride.Caption = "Select a bug first";
+                return;
+            }
+            e.AcceptedOperation = DataPackageOperation.Copy;
+            if (e.DragUIOverride is not null)
+                e.DragUIOverride.Caption = "Add to screenshots";
+            dropZone.BorderBrush = accent;
+            dropZone.Background = highlight;
+        };
+        dropZone.DragLeave += (_, _) =>
+        {
+            dropZone.BorderBrush = defaultBorder;
+            dropZone.Background = defaultBg;
+        };
+        dropZone.Drop += async (_, e) =>
+        {
+            await HandleScreenshotDrop(e);
+            dropZone.BorderBrush = defaultBorder;
+            dropZone.Background = defaultBg;
+        };
+        panel.Children.Add(dropZone);
+
+        _bugScreenshotsPreview = new ItemsControl();
+        try
+        {
+            _bugScreenshotsPreview.ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+                "<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>" +
+                "<ItemsWrapGrid Orientation='Horizontal'/></ItemsPanelTemplate>");
+        }
+        catch { }
+        panel.Children.Add(_bugScreenshotsPreview);
+
+        LoadScreenshotsForSelectedBug();
+        return panel;
+    }
+
+    private async Task HandleScreenshotDrop(DragEventArgs e)
+    {
+        var vm = GetVm();
+        if (vm?.SelectedNote is null || _selectedBugRow is null) return;
+
+        try
+        {
+            var items = await e.DataView.GetStorageItemsAsync();
+            foreach (var item in items)
+            {
+                if (item is not StorageFile file) continue;
+                if (!_imageExtensions.Contains(Path.GetExtension(file.Name))) continue;
+
+                var baseName = Path.GetFileNameWithoutExtension(file.Name);
+                var sanitized = string.Concat(baseName.Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c));
+                if (string.IsNullOrEmpty(sanitized)) sanitized = "screenshot";
+                var name = $"{DateTime.Now:yyyyMMdd_HHmmss_fff}_{sanitized}{Path.GetExtension(file.Name)}";
+                var target = Path.Combine(_bugScreenshotsDir, name);
+                File.Copy(file.Path, target, overwrite: false);
+                _bugScreenshots.Add(target);
+                _screenshotStore.AddScreenshot(vm.SelectedNote.FileName, _selectedBugRow.Col1, name);
+            }
+            RefreshScreenshotPreviews();
+        }
+        catch { }
+    }
+
+    private void LoadScreenshotsForSelectedBug()
+    {
+        _bugScreenshots.Clear();
+        var vm = GetVm();
+        if (vm?.SelectedNote is not null && _selectedBugRow is not null)
+        {
+            foreach (var fileName in _screenshotStore.GetScreenshots(vm.SelectedNote.FileName, _selectedBugRow.Col1))
+                _bugScreenshots.Add(Path.Combine(_bugScreenshotsDir, fileName));
+        }
+        RefreshScreenshotPreviews();
+    }
+
+    private void RefreshScreenshotPreviews()
+    {
+        if (_bugScreenshotsPreview is null) return;
+        _bugScreenshotsPreview.Items.Clear();
+        foreach (var path in _bugScreenshots)
+        {
+            try
+            {
+                _bugScreenshotsPreview.Items.Add(new Image
+                {
+                    Source = new BitmapImage(new Uri("file:///" + path.Replace('\\', '/'))),
+                    Width = 120,
+                    Height = 90,
+                    Stretch = Stretch.UniformToFill,
+                    Margin = new Thickness(0, 0, 8, 8),
+                });
+            }
+            catch { }
+        }
+    }
+
     private StackPanel BuildBugStatusSegmented()
     {
-        var panel = new StackPanel { Spacing = 4, Margin = new Thickness(0, 8, 0, 0) };
+        var panel = new StackPanel { Spacing = 4, Margin = new Thickness(0, 8, 0, 12) };
 
         var label = new TextBlock { Text = "Filter Bugs", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) };
         panel.Children.Add(label);
 
-        var segments = new Segmented { HorizontalAlignment = HorizontalAlignment.Stretch };
+        var segments = new Segmented { HorizontalAlignment = HorizontalAlignment.Left };
 
         var allItem = new SegmentedItem { Content = "All" };
         allItem.Tapped += (_, _) => { _bugStatusFilterSet.Clear(); RebuildBugTrackerRows(); };
@@ -852,16 +1030,48 @@ public sealed partial class NotePage : UserControl
         PopulateBugForm(row);
     }
 
-    private static void SetLangSegmented(Segmented seg, string? value)
+    private static Segmented BuildLangSegmented()
+    {
+        var seg = new Segmented();
+        seg.Items.Add(new SegmentedItem { Content = "Not Affected" });
+        seg.Items.Add(new SegmentedItem { Content = "Affected" });
+        seg.SelectionChanged += (_, _) => ColorLangSegmented(seg);
+        return seg;
+    }
+
+    private static void ColorLangSegmented(Segmented seg)
     {
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
         var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
         for (int i = 0; i < seg.Items.Count; i++)
         {
             if (seg.Items[i] is SegmentedItem item)
-                item.Background = (i == 0 && value == "Not Affected") ? green : (i == 1 && value == "Affected") ? red : null;
+                item.Background = i == seg.SelectedIndex
+                    ? (i == 0 ? green : red)
+                    : null;
         }
+    }
+
+    private static void SetLangSegmented(Segmented seg, string? value)
+    {
         seg.SelectedIndex = value == "Affected" ? 1 : value == "Not Affected" ? 0 : -1;
+        ColorLangSegmented(seg);
+    }
+
+    private string? GetAffectedLanguageInitials()
+    {
+        var initials = new List<string>();
+        if (_bugFormFrench?.SelectedIndex == 1) initials.Add("FR");
+        if (_bugFormItalian?.SelectedIndex == 1) initials.Add("IT");
+        if (_bugFormGerman?.SelectedIndex == 1) initials.Add("DE");
+        if (_bugFormSpanish?.SelectedIndex == 1) initials.Add("ES");
+        return initials.Count == 0 ? null : "[" + string.Join(", ", initials) + "]";
+    }
+
+    private static string BuildBugSummaryWithLanguages(string summary, string? languageInitials)
+    {
+        var cleaned = Regex.Replace(summary, @"\s*\[(?:FR|IT|DE|ES)(?:\s*,\s*(?:FR|IT|DE|ES))*\]", "").Trim();
+        return string.IsNullOrEmpty(languageInitials) ? cleaned : $"{languageInitials} {cleaned}".Trim();
     }
 
     private void PopulateBugForm(TableRow? row)
@@ -879,6 +1089,7 @@ public sealed partial class NotePage : UserControl
             SetLangSegmented(_bugFormItalian!, null);
             SetLangSegmented(_bugFormGerman!, null);
             SetLangSegmented(_bugFormSpanish!, null);
+            LoadScreenshotsForSelectedBug();
             return;
         }
 
@@ -894,6 +1105,7 @@ public sealed partial class NotePage : UserControl
         SetLangSegmented(_bugFormItalian!, row.Col9);
         SetLangSegmented(_bugFormGerman!, row.Col10);
         SetLangSegmented(_bugFormSpanish!, row.Col11);
+        LoadScreenshotsForSelectedBug();
     }
 
     private async Task SaveBugForm()
@@ -903,7 +1115,9 @@ public sealed partial class NotePage : UserControl
 
         var row = _selectedBugRow;
         row.Col4 = _bugFormType?.SelectedItem as string ?? "";
-        row.Col5 = _bugFormSummary?.Text ?? "";
+        var bugSummary = BuildBugSummaryWithLanguages(_bugFormSummary?.Text ?? "", GetAffectedLanguageInitials());
+        row.Col5 = bugSummary;
+        _bugFormSummary!.Text = bugSummary;
         row.Col6 = _bugFormDesc?.Text ?? "";
         row.Col7 = _bugFormSteps?.Text ?? "";
         row.Col8 = _bugFormFrench?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
@@ -979,8 +1193,8 @@ public sealed partial class NotePage : UserControl
         var langRow1 = new Grid { ColumnSpacing = 16 };
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormFrench = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
-        _bugFormItalian = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        _bugFormFrench = BuildLangSegmented();
+        _bugFormItalian = BuildLangSegmented();
         var frenchPanel = new StackPanel { Spacing = 4 };
         frenchPanel.Children.Add(new TextBlock { Text = "French", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         frenchPanel.Children.Add(_bugFormFrench);
@@ -996,8 +1210,8 @@ public sealed partial class NotePage : UserControl
         var langRow2 = new Grid { ColumnSpacing = 16 };
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormGerman = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
-        _bugFormSpanish = new Segmented { Items = { new SegmentedItem { Content = "Not Affected" }, new SegmentedItem { Content = "Affected" } } };
+        _bugFormGerman = BuildLangSegmented();
+        _bugFormSpanish = BuildLangSegmented();
         var germanPanel = new StackPanel { Spacing = 4 };
         germanPanel.Children.Add(new TextBlock { Text = "German", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         germanPanel.Children.Add(_bugFormGerman);
@@ -1012,7 +1226,9 @@ public sealed partial class NotePage : UserControl
 
         form.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
         form.Children.Add(BuildBugStatusSelector());
-        form.Children.Add(BuildBugStatusSegmented());
+
+        form.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
+        form.Children.Add(BuildScreenshotsSection());
 
         var saveBtn = new Button
         {
@@ -1161,7 +1377,7 @@ public sealed partial class NotePage : UserControl
         _sidebarExpanded = !_sidebarExpanded;
 
         var vm = GetVm();
-        SetSidebarWidth(_sidebarExpanded, vm?.IsBugTracker == true);
+        SetSidebarWidth(_sidebarExpanded);
 
         if (vm is not null)
         {
@@ -1179,10 +1395,10 @@ public sealed partial class NotePage : UserControl
         ToggleBtn.Content = new SymbolIcon(_sidebarExpanded ? Symbol.OpenPane : Symbol.ClosePane);
     }
 
-    private void SetSidebarWidth(bool expanded, bool bugTracker)
+    private void SetSidebarWidth(bool expanded)
     {
         RootLayout.ColumnDefinitions[0].Width = expanded
-            ? (bugTracker ? new GridLength(820) : GridLength.Auto)
+            ? GridLength.Auto
             : new GridLength(0);
     }
 
@@ -2129,16 +2345,29 @@ public sealed partial class NotePage : UserControl
             if (bugNote is null) return;
 
             var rows = await bugVm.ExcelService.LoadRowsAsync(bugNote);
+            var summary = summaryBox.Text;
+            if (header is "French" or "Italian" or "German" or "Spanish")
+            {
+                var initial = header switch { "French" => "FR", "Italian" => "IT", "German" => "DE", _ => "ES" };
+                summary = BuildBugSummaryWithLanguages(summary, $"[{initial}]");
+            }
             var newRow = new TableRow
             {
                 Col1 = (rows.Count + 1).ToString(),
                 Col2 = Environment.UserName,
                 Col3 = DateTime.Now.ToString("yyyy/MM/dd"),
                 Col4 = typeCombo.SelectedItem as string ?? "",
-                Col5 = summaryBox.Text,
+                Col5 = summary,
                 Col6 = descBox.Text,
                 Col7 = stepsBox.Text,
             };
+            switch (header)
+            {
+                case "French": newRow.Col8 = "Affected"; break;
+                case "Italian": newRow.Col9 = "Affected"; break;
+                case "German": newRow.Col10 = "Affected"; break;
+                case "Spanish": newRow.Col11 = "Affected"; break;
+            }
             rows.Add(newRow);
             await bugVm.ExcelService.SaveRowsAsync(bugNote, rows);
 
