@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:ConnectionId='2' x:Name="RootLayout">
+    <Grid x:ConnectionId='2' x:Name="RootLayout" Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="24"/>
@@ -47,7 +47,7 @@
               BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"/>
 
         <Grid Grid.Column="1">
-            <Button x:ConnectionId='10' x:Name="ToggleBtn" Width="20" Height="64"
+            <Button x:ConnectionId='12' x:Name="ToggleBtn" Width="20" Height="64"
                     VerticalAlignment="Center" Padding="0"
                     Background="Transparent" BorderThickness="0"
                                            >
@@ -74,10 +74,10 @@
             <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
                 <Button x:ConnectionId='8' x:Name="NewNoteBtn" Command="{Binding NewNoteCommand}" Content="+" FontSize="18"
                         Width="36" Height="36" Padding="0"/>
-                <Button Command="{Binding SaveNoteCommand}" Content="Save"
+                <Button x:ConnectionId='9' x:Name="SaveNoteBtn" Command="{Binding SaveNoteCommand}" Content="Save"
                         Style="{StaticResource AccentButtonStyle}"/>
-                <Button x:ConnectionId='9' x:Name="DeleteNoteBtn" Command="{Binding DeleteNoteCommand}" Content="Delete"/>
-                <Button Command="{Binding AddRowCommand}" Content="Add Row"/>
+                <Button x:ConnectionId='10' x:Name="DeleteNoteBtn" Command="{Binding DeleteNoteCommand}" Content="Delete"/>
+                <Button x:ConnectionId='11' x:Name="AddRowBtn" Command="{Binding AddRowCommand}" Content="Add Row"/>
             </StackPanel>
 
             <InfoBar Grid.Row="3"
