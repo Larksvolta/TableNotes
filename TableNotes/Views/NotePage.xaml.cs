@@ -61,8 +61,12 @@ public sealed partial class NotePage : UserControl
     private TextBlock? _bugFormId;
     private TextBlock? _bugFormUsername;
     private TextBlock? _bugFormDate;
-    private ItemsControl? _bugScreenshotsPreview;
-    private readonly List<string> _bugScreenshots = new();
+    private readonly Dictionary<string, ItemsControl> _bugLangScreenshotPreviews = new();
+    private readonly Dictionary<string, List<string>> _bugLangScreenshots = new();
+    private readonly Dictionary<string, StackPanel> _bugLangScreenshotZones = new();
+    private readonly Dictionary<string, Border> _bugLangScreenshotOverlays = new();
+    private Grid? _bugLangScreenshotGrid;
+    private static readonly string[] _langKeys = { "FR", "IT", "DE", "ES" };
     private static readonly HashSet<string> _imageExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".tiff"
@@ -467,7 +471,7 @@ public sealed partial class NotePage : UserControl
         {
             PlaceholderText = "Quick Search",
             Text = _bugQuickSearchText,
-            Width = 955,
+            Width = 902,
             HorizontalAlignment = HorizontalAlignment.Left,
         };
         quickSearch.TextChanged += (_, _) =>
@@ -612,12 +616,13 @@ public sealed partial class NotePage : UserControl
 
             var rowGrid = new Grid { Height = 40, Margin = new Thickness(1, 0, 1, 0) };
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(42) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(300) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(260) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(162) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
 
             var selBorder = new Border();
             if (ReferenceEquals(row, _selectedBugRow))
@@ -656,6 +661,10 @@ public sealed partial class NotePage : UserControl
             Grid.SetColumn(missingExp, 6);
             rowGrid.Children.Add(missingExp);
 
+            var missingShot = new TextBlock { Text = GetMissingScreenshotInitials(row), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
+            Grid.SetColumn(missingShot, 7);
+            rowGrid.Children.Add(missingShot);
+
             rowGrid.PointerPressed += (_, _) => OnBugSelected(row);
             _bugItemsPanel.Children.Add(rowGrid);
         }
@@ -669,12 +678,13 @@ public sealed partial class NotePage : UserControl
             ColumnDefinitions =
             {
                 new ColumnDefinition { Width = new GridLength(42) },
-                new ColumnDefinition { Width = new GridLength(300) },
-                new ColumnDefinition { Width = new GridLength(110) },
+                new ColumnDefinition { Width = new GridLength(260) },
+                new ColumnDefinition { Width = new GridLength(100) },
                 new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(162) },
-                new ColumnDefinition { Width = new GridLength(170) },
-                new ColumnDefinition { Width = new GridLength(170) },
+                new ColumnDefinition { Width = new GridLength(150) },
+                new ColumnDefinition { Width = new GridLength(140) },
+                new ColumnDefinition { Width = new GridLength(140) },
+                new ColumnDefinition { Width = new GridLength(120) },
             },
             Margin = new Thickness(0, 0, 0, 6)
         };
@@ -750,6 +760,10 @@ public sealed partial class NotePage : UserControl
         var missingExpHeader = new TextBlock { Text = "Missing Expected Result", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
         Grid.SetColumn(missingExpHeader, 6);
         header.Children.Add(missingExpHeader);
+
+        var missingShotHeader = new TextBlock { Text = "Missing Screenshot", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
+        Grid.SetColumn(missingShotHeader, 7);
+        header.Children.Add(missingShotHeader);
 
         return header;
     }
@@ -891,71 +905,123 @@ public sealed partial class NotePage : UserControl
         var label = new TextBlock { Text = "Screenshots", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
         panel.Children.Add(label);
 
-        var dropZone = new Border
-        {
-            Height = 110,
-            AllowDrop = true,
-            CornerRadius = new CornerRadius(6),
-            BorderThickness = new Thickness(2),
-            BorderBrush = DefaultDropBorderBrush(),
-            Background = DefaultDropBackground(),
-            Child = new TextBlock
-            {
-                Text = "Drag and drop screenshots here",
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Opacity = 0.6,
-            },
-        };
+        var langGrid = new Grid { ColumnSpacing = 12, RowSpacing = 12, Margin = new Thickness(0, 4, 0, 0), MinHeight = 160, AllowDrop = true };
+        langGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        langGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        langGrid.RowDefinitions.Add(new RowDefinition());
+        langGrid.RowDefinitions.Add(new RowDefinition());
+        _bugLangScreenshotGrid = langGrid;
+        langGrid.DragOver += OnLangGridDragOver;
+        langGrid.DragLeave += OnLangGridDragLeave;
+        langGrid.Drop += OnLangGridDrop;
+        panel.Children.Add(langGrid);
 
-        var accent = Application.Current.Resources["AccentFillColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x78, 0xD7));
-        var highlight = Application.Current.Resources["AccentFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x22, 0x00, 0x78, 0xD7));
-        var defaultBorder = DefaultDropBorderBrush();
-        var defaultBg = DefaultDropBackground();
+        LoadScreenshotsForSelectedBug();
+        UpdateLangScreenshotVisibility();
+        return panel;
+    }
 
-        dropZone.DragOver += (_, e) =>
+    private string? GetLangScreenshotZoneAt(Windows.Foundation.Point p)
+    {
+        if (_bugLangScreenshotGrid is null) return null;
+        foreach (var kvp in _bugLangScreenshotZones)
         {
-            if (_selectedBugRow is null)
-            {
-                e.AcceptedOperation = DataPackageOperation.None;
-                if (e.DragUIOverride is not null)
-                    e.DragUIOverride.Caption = "Select a bug first";
-                return;
-            }
-            e.AcceptedOperation = DataPackageOperation.Copy;
+            var zone = kvp.Value;
+            var pt = zone.TransformToVisual(_bugLangScreenshotGrid).TransformPoint(new Windows.Foundation.Point(0, 0));
+            var rect = new Windows.Foundation.Rect(pt.X, pt.Y, zone.ActualWidth, zone.ActualHeight);
+            if (rect.Contains(p))
+                return kvp.Key;
+        }
+        return null;
+    }
+
+    private void OnLangGridDragOver(object sender, DragEventArgs e)
+    {
+        var lang = GetLangScreenshotZoneAt(e.GetPosition(_bugLangScreenshotGrid!));
+        if (_selectedBugRow is null || lang is null)
+        {
+            e.AcceptedOperation = DataPackageOperation.None;
             if (e.DragUIOverride is not null)
-                e.DragUIOverride.Caption = "Add to screenshots";
-            dropZone.BorderBrush = accent;
-            dropZone.Background = highlight;
-        };
-        dropZone.DragLeave += (_, _) =>
-        {
-            dropZone.BorderBrush = defaultBorder;
-            dropZone.Background = defaultBg;
-        };
-        dropZone.Drop += async (_, e) =>
-        {
-            await HandleScreenshotDrop(e);
-            dropZone.BorderBrush = defaultBorder;
-            dropZone.Background = defaultBg;
-        };
-        panel.Children.Add(dropZone);
+                e.DragUIOverride.Caption = _selectedBugRow is null ? "Select a bug first" : "";
+            return;
+        }
+        e.AcceptedOperation = DataPackageOperation.Copy;
+        if (e.DragUIOverride is not null)
+            e.DragUIOverride.Caption = "Add to screenshots";
+        foreach (var kvp in _bugLangScreenshotOverlays)
+            kvp.Value.Visibility = kvp.Key == lang ? Visibility.Visible : Visibility.Collapsed;
+    }
 
-        _bugScreenshotsPreview = new ItemsControl();
+    private void OnLangGridDragLeave(object sender, DragEventArgs e)
+    {
+        foreach (var overlay in _bugLangScreenshotOverlays.Values)
+            overlay.Visibility = Visibility.Collapsed;
+    }
+
+    private async void OnLangGridDrop(object sender, DragEventArgs e)
+    {
+        var lang = GetLangScreenshotZoneAt(e.GetPosition(_bugLangScreenshotGrid!));
+        foreach (var overlay in _bugLangScreenshotOverlays.Values)
+            overlay.Visibility = Visibility.Collapsed;
+        if (lang is not null)
+            await HandleLangScreenshotDrop(lang, e);
+    }
+
+    private StackPanel BuildLangScreenshotArea(string langKey, string label)
+    {
+        var panel = new StackPanel { Spacing = 4 };
+        panel.Children.Add(new TextBlock { Text = label, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+
+        var container = new Grid { MinHeight = 120 };
+
+        var preview = new ItemsControl();
         try
         {
-            _bugScreenshotsPreview.ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+            preview.ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
                 "<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>" +
                 "<ItemsWrapGrid Orientation='Horizontal'/></ItemsPanelTemplate>");
         }
         catch { }
-        panel.Children.Add(_bugScreenshotsPreview);
+        container.Children.Add(preview);
 
-        LoadScreenshotsForSelectedBug();
+        var accent = Application.Current.Resources["AccentFillColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x78, 0xD7));
+        var highlight = Application.Current.Resources["AccentFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x22, 0x00, 0x78, 0xD7));
+
+        var overlay = new Border
+        {
+            Visibility = Visibility.Collapsed,
+            IsHitTestVisible = false,
+            Background = highlight,
+            BorderBrush = accent,
+            BorderThickness = new Thickness(2),
+            CornerRadius = new CornerRadius(6),
+            Child = new TextBlock
+            {
+                Text = $"Drop {label} screenshots here",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Opacity = 0.7,
+            },
+        };
+        container.Children.Add(overlay);
+
+        var dropBorder = new Border
+        {
+            BorderThickness = new Thickness(2),
+            BorderBrush = DefaultDropBorderBrush(),
+            Background = DefaultDropBackground(),
+            CornerRadius = new CornerRadius(6),
+            Padding = new Thickness(4),
+            Child = container,
+        };
+        panel.Children.Add(dropBorder);
+
+        _bugLangScreenshotPreviews[langKey] = preview;
+        _bugLangScreenshotOverlays[langKey] = overlay;
         return panel;
     }
 
-    private async Task HandleScreenshotDrop(DragEventArgs e)
+    private async Task HandleLangScreenshotDrop(string langKey, DragEventArgs e)
     {
         var vm = GetVm();
         if (vm?.SelectedNote is null || _selectedBugRow is null) return;
@@ -974,41 +1040,48 @@ public sealed partial class NotePage : UserControl
                 var name = $"{DateTime.Now:yyyyMMdd_HHmmss_fff}_{sanitized}{Path.GetExtension(file.Name)}";
                 var target = Path.Combine(_bugScreenshotsDir, name);
                 File.Copy(file.Path, target, overwrite: false);
-                _bugScreenshots.Add(target);
-                _screenshotStore.AddScreenshot(vm.SelectedNote.FileName, _selectedBugRow.Col1, name);
+                _screenshotStore.AddScreenshot(vm.SelectedNote.FileName, _selectedBugRow.Col1, langKey, name);
+                _bugLangScreenshots[langKey].Add(target);
             }
-            RefreshScreenshotPreviews();
+            RefreshLangScreenshotPreviews(langKey);
+            RebuildBugTrackerRows();
         }
         catch { }
     }
 
     private void LoadScreenshotsForSelectedBug()
     {
-        _bugScreenshots.Clear();
+        foreach (var k in _langKeys)
+            _bugLangScreenshots[k] = new List<string>();
+
         var vm = GetVm();
         if (vm?.SelectedNote is not null && _selectedBugRow is not null)
         {
-            foreach (var fileName in _screenshotStore.GetScreenshots(vm.SelectedNote.FileName, _selectedBugRow.Col1))
-                _bugScreenshots.Add(Path.Combine(_bugScreenshotsDir, fileName));
+            foreach (var k in _langKeys)
+            {
+                foreach (var fileName in _screenshotStore.GetScreenshots(vm.SelectedNote.FileName, _selectedBugRow.Col1, k))
+                    _bugLangScreenshots[k].Add(Path.Combine(_bugScreenshotsDir, fileName));
+            }
         }
-        RefreshScreenshotPreviews();
+        foreach (var k in _langKeys)
+            RefreshLangScreenshotPreviews(k);
     }
 
-    private void RefreshScreenshotPreviews()
+    private void RefreshLangScreenshotPreviews(string langKey)
     {
-        if (_bugScreenshotsPreview is null) return;
-        _bugScreenshotsPreview.Items.Clear();
-        foreach (var path in _bugScreenshots)
+        if (!_bugLangScreenshotPreviews.TryGetValue(langKey, out var preview)) return;
+        preview.Items.Clear();
+        foreach (var path in _bugLangScreenshots[langKey])
         {
             try
             {
-                _bugScreenshotsPreview.Items.Add(new Image
+                preview.Items.Add(new Image
                 {
                     Source = new BitmapImage(new Uri("file:///" + path.Replace('\\', '/'))),
-                    Width = 120,
-                    Height = 90,
+                    Width = 100,
+                    Height = 75,
                     Stretch = Stretch.UniformToFill,
-                    Margin = new Thickness(0, 0, 8, 8),
+                    Margin = new Thickness(0, 0, 6, 6),
                 });
             }
             catch { }
@@ -1063,7 +1136,7 @@ public sealed partial class NotePage : UserControl
         PopulateBugForm(row);
     }
 
-    private static Segmented BuildLangSegmented()
+    private Segmented BuildLangSegmented()
     {
         var seg = new Segmented();
         seg.Items.Add(new SegmentedItem { Content = "Not Affected" });
@@ -1072,7 +1145,7 @@ public sealed partial class NotePage : UserControl
         return seg;
     }
 
-    private static StackPanel BuildLangResultPanel(string langName, out Segmented segmented, out TextBox observed, out TextBox expected)
+    private StackPanel BuildLangResultPanel(string langName, out Segmented segmented, out TextBox observed, out TextBox expected)
     {
         segmented = BuildLangSegmented();
         observed = new TextBox { Header = "Observed Result", TextWrapping = TextWrapping.Wrap, AcceptsReturn = true, MinHeight = 60 };
@@ -1081,7 +1154,11 @@ public sealed partial class NotePage : UserControl
         var obs = observed;
         var exp = expected;
         SetLangResultEnabled(seg, obs, exp);
-        seg.SelectionChanged += (_, _) => SetLangResultEnabled(seg, obs, exp);
+        seg.SelectionChanged += (_, _) =>
+        {
+            SetLangResultEnabled(seg, obs, exp);
+            UpdateLangScreenshotVisibility();
+        };
         var panel = new StackPanel { Spacing = 4 };
         panel.Children.Add(new TextBlock { Text = langName, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
         panel.Children.Add(segmented);
@@ -1111,6 +1188,45 @@ public sealed partial class NotePage : UserControl
         {
             if (b is not null)
                 b.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
+    private void UpdateLangScreenshotVisibility()
+    {
+        if (_bugLangScreenshotGrid is null) return;
+
+        var affected = new Dictionary<string, bool>
+        {
+            ["FR"] = _bugFormFrench?.SelectedIndex == 1,
+            ["IT"] = _bugFormItalian?.SelectedIndex == 1,
+            ["DE"] = _bugFormGerman?.SelectedIndex == 1,
+            ["ES"] = _bugFormSpanish?.SelectedIndex == 1,
+        };
+        var labels = new Dictionary<string, string>
+        {
+            ["FR"] = "French", ["IT"] = "Italian", ["DE"] = "German", ["ES"] = "Spanish",
+        };
+
+        _bugLangScreenshotGrid.Children.Clear();
+        _bugLangScreenshotPreviews.Clear();
+        _bugLangScreenshotZones.Clear();
+        _bugLangScreenshotOverlays.Clear();
+        int idx = 0;
+        foreach (var k in _langKeys)
+        {
+            if (!affected[k]) continue;
+            var zone = BuildLangScreenshotArea(k, labels[k]);
+            _bugLangScreenshotZones[k] = zone;
+            Grid.SetColumn(zone, idx % 2);
+            Grid.SetRow(zone, idx / 2);
+            _bugLangScreenshotGrid.Children.Add(zone);
+            idx++;
+        }
+
+        foreach (var k in _langKeys)
+        {
+            if (affected[k])
+                RefreshLangScreenshotPreviews(k);
         }
     }
 
@@ -1165,6 +1281,20 @@ public sealed partial class NotePage : UserControl
         return string.Join(", ", initials);
     }
 
+    private string GetMissingScreenshotInitials(TableRow row)
+    {
+        var vm = GetVm();
+        if (vm?.SelectedNote is null)
+            return string.Empty;
+        var with = _screenshotStore.GetLanguagesWithScreenshots(vm.SelectedNote.FileName, row.Col1);
+        var initials = new List<string>();
+        if (row.Col8 == "Affected" && !with.Contains("FR")) initials.Add("FR");
+        if (row.Col9 == "Affected" && !with.Contains("IT")) initials.Add("IT");
+        if (row.Col10 == "Affected" && !with.Contains("DE")) initials.Add("DE");
+        if (row.Col11 == "Affected" && !with.Contains("ES")) initials.Add("ES");
+        return string.Join(", ", initials);
+    }
+
     private void PopulateBugForm(TableRow? row)
     {
         if (row is null)
@@ -1192,6 +1322,7 @@ public sealed partial class NotePage : UserControl
             _bugFormGlobalExpected!.Text = "";
             _bugFormNeedsLangSpecific!.IsChecked = false;
             UpdateLangResultVisibility();
+            UpdateLangScreenshotVisibility();
             LoadScreenshotsForSelectedBug();
             return;
         }
@@ -1220,6 +1351,7 @@ public sealed partial class NotePage : UserControl
         _bugFormGlobalExpected!.Text = row.Col22;
         _bugFormNeedsLangSpecific!.IsChecked = row.Col23 == "Yes";
         UpdateLangResultVisibility();
+        UpdateLangScreenshotVisibility();
         LoadScreenshotsForSelectedBug();
     }
 

@@ -5,23 +5,23 @@ namespace TableNotes.Services;
 public class ScreenshotStore
 {
     private readonly string _filePath;
-    private Dictionary<string, Dictionary<string, List<string>>>? _cache;
+    private Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>? _cache;
 
     public ScreenshotStore(string dataDir)
     {
         _filePath = Path.Combine(dataDir, "screenshots.json");
     }
 
-    private Dictionary<string, Dictionary<string, List<string>>> Load()
+    private Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> Load()
     {
         if (_cache is not null) return _cache;
 
-        _cache = new Dictionary<string, Dictionary<string, List<string>>>();
+        _cache = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
         if (File.Exists(_filePath))
         {
             try
             {
-                _cache = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(
+                _cache = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>(
                     File.ReadAllText(_filePath)) ?? new();
             }
             catch { }
@@ -42,26 +42,40 @@ public class ScreenshotStore
         catch { }
     }
 
-    public List<string> GetScreenshots(string noteFileName, string bugId)
+    public List<string> GetScreenshots(string noteFileName, string bugId, string language)
     {
         if (Load().TryGetValue(noteFileName, out var byBug)
-            && byBug.TryGetValue(bugId, out var files))
+            && byBug.TryGetValue(bugId, out var byLang)
+            && byLang.TryGetValue(language, out var files))
             return new List<string>(files);
         return new List<string>();
     }
 
-    public void AddScreenshot(string noteFileName, string bugId, string fileName)
+    public List<string> GetLanguagesWithScreenshots(string noteFileName, string bugId)
+    {
+        if (Load().TryGetValue(noteFileName, out var byBug)
+            && byBug.TryGetValue(bugId, out var byLang))
+            return byLang.Where(kv => kv.Value.Count > 0).Select(kv => kv.Key).ToList();
+        return new List<string>();
+    }
+
+    public void AddScreenshot(string noteFileName, string bugId, string language, string fileName)
     {
         var map = Load();
         if (!map.TryGetValue(noteFileName, out var byBug))
         {
-            byBug = new Dictionary<string, List<string>>();
+            byBug = new Dictionary<string, Dictionary<string, List<string>>>();
             map[noteFileName] = byBug;
         }
-        if (!byBug.TryGetValue(bugId, out var files))
+        if (!byBug.TryGetValue(bugId, out var byLang))
+        {
+            byLang = new Dictionary<string, List<string>>();
+            byBug[bugId] = byLang;
+        }
+        if (!byLang.TryGetValue(language, out var files))
         {
             files = new List<string>();
-            byBug[bugId] = files;
+            byLang[language] = files;
         }
         if (!files.Contains(fileName))
             files.Add(fileName);
