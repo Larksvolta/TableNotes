@@ -110,3 +110,8 @@ C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\bin\Debug\net10.0
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\bin\Debug\net10.0-windows10.0.19041.0\CommunityToolkit.WinUI.Extensions.dll
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\CommunityToolkit.WinUI.Controls.Segmented.pri.xml
 C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\CommunityToolkit.WinUI.Extensions.pri.xml
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\bin\Debug\net10.0-windows10.0.19041.0\Views\TeamLeadPage.xbf
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\Views\TeamLeadPage.g.i.cs
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\Views\TeamLeadPage.g.cs
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\Views\TeamLeadPage.xaml
+C:\Users\larks\Documents\Default Project\TableNotes\TableNotes\obj\Debug\net10.0-windows10.0.19041.0\Views\TeamLeadPage.xbf

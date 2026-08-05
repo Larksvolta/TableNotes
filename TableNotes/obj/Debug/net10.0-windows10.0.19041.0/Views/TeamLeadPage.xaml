@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="TableNotes.Views.TeamLeadPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <NavigationView x:ConnectionId='2' x:Name="Nav"
+                    PaneDisplayMode="Left"
+                    IsBackButtonVisible="Collapsed"
+                    IsSettingsVisible="False"
+                    IsPaneToggleButtonVisible="True"
+                    OpenPaneLength="200"
+                                                            >
+        <NavigationView.MenuItems>
+            <NavigationViewItem Content="Projects" Tag="Projects">
+                <NavigationViewItem.Icon>
+                    <SymbolIcon Symbol="Folder"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem Content="Users" Tag="Users">
+                <NavigationViewItem.Icon>
+                    <SymbolIcon Symbol="People"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+
+        <ScrollViewer>
+            <Grid x:ConnectionId='3' x:Name="ContentRoot" Padding="12,12,12,0">
+                <StackPanel x:ConnectionId='4' x:Name="ProjectForm" Width="420" Spacing="8" HorizontalAlignment="Left">
+                    <TextBlock Text="Projects" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox PlaceholderText="Project Name" Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox PlaceholderText="Project Lead" Text="{Binding ProjectLead, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ComboBox Header="Status" PlaceholderText="Select status" SelectedValue="{Binding ProjectStatus, Mode=TwoWay}" SelectedValuePath="Content">
+                        <ComboBoxItem Content="Planned"/>
+                        <ComboBoxItem Content="In Progress"/>
+                        <ComboBoxItem Content="Done"/>
+                    </ComboBox>
+                    <Button Content="Save" Command="{Binding SaveProjectCommand}" Style="{StaticResource AccentButtonStyle}" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                    <InfoBar Message="{Binding StatusMessage}" IsOpen="{Binding HasStatusMessage}" Severity="Success" IsClosable="True"/>
+                </StackPanel>
+
+                <StackPanel x:ConnectionId='5' x:Name="UsersForm" Width="420" Spacing="8" HorizontalAlignment="Left" Visibility="Collapsed">
+                    <TextBlock Text="Users" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox PlaceholderText="User Name" Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox PlaceholderText="Role" Text="{Binding UserRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox PlaceholderText="Email" Text="{Binding UserEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                        <Button Content="Add User" Command="{Binding AddUserCommand}"/>
+                        <Button Content="Remove Selected" Command="{Binding RemoveUserCommand}"/>
+                    </StackPanel>
+                    <ListView ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                              SelectionMode="Single" Height="280">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                    <TextBlock Text="{Binding Role}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{Binding Email}" FontSize="12" Foreground="{ThemeResource TextFillColorDisabledBrush}" TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <InfoBar Message="{Binding StatusMessage}" IsOpen="{Binding HasStatusMessage}" Severity="Success" IsClosable="True"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </NavigationView>
+</UserControl>
+

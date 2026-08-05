@@ -17,6 +17,7 @@ public sealed partial class MainWindow : Window
     private InputNonClientPointerSource? _nonClientInput;
     private readonly TabView _tabView = new() { IsAddTabButtonVisible = false };
     private readonly NotePage[] _pages = new NotePage[4];
+    private TeamLeadPage? _teamLeadPage;
 
     public static MainWindow? Instance { get; private set; }
     public NotePage? TextFilesPage => _pages.FirstOrDefault(p => p.DataContext is NotePageViewModel vm && vm.PageName == "TextFiles");
@@ -62,6 +63,13 @@ public sealed partial class MainWindow : Window
             _pages[i] = page;
         }
 
+        _teamLeadPage = new TeamLeadPage { DataContext = ViewModel.TeamLeadVm };
+        var teamLeadItem = new TabViewItem { Header = "Team Lead", IsClosable = false, Tag = _teamLeadPage };
+        _tabView.TabItems.Add(teamLeadItem);
+        _teamLeadPage.Visibility = Visibility.Collapsed;
+        Grid.SetRow(_teamLeadPage, 2);
+        RootGrid.Children.Add(_teamLeadPage);
+
         _tabView.SelectionChanged += OnTabSelectionChanged;
 
         var menuBar = new MenuBar();
@@ -88,11 +96,32 @@ public sealed partial class MainWindow : Window
         viewMenu.Items.Add(new MenuFlyoutItem { Text = "Zoom Out" });
         menuBar.Items.Add(viewMenu);
 
+        var accountButton = new Button
+        {
+            Content = new FontIcon { Glyph = "\uE77B", FontSize = 16 },
+            Margin = new Thickness(0, 4, 8, 4),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        var accountMenu = new MenuFlyout();
+        var settingsItem = new MenuFlyoutItem { Text = "Settings" };
+        settingsItem.Click += async (_, _) => await ShowSettingsDialog();
+        accountMenu.Items.Add(settingsItem);
+        accountButton.Flyout = accountMenu;
+
+        var topRow = new Grid();
+        topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        Grid.SetColumn(menuBar, 0);
+        Grid.SetColumn(accountButton, 1);
+        topRow.Children.Add(menuBar);
+        topRow.Children.Add(accountButton);
+
         Grid.SetRow(_tabView, 0);
-        Grid.SetRow(menuBar, 1);
+        Grid.SetRow(topRow, 1);
 
         RootGrid.Children.Add(_tabView);
-        RootGrid.Children.Add(menuBar);
+        RootGrid.Children.Add(topRow);
 
         _pages[0].Visibility = Visibility.Visible;
         Grid.SetRow(_pages[0], 2);
@@ -110,15 +139,36 @@ public sealed partial class MainWindow : Window
 
     private void OnTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var selectedPage = (_tabView.SelectedItem as TabViewItem)?.Tag as NotePage;
+        var selectedTab = (_tabView.SelectedItem as TabViewItem)?.Tag as FrameworkElement;
         foreach (var page in _pages)
-            page.Visibility = page == selectedPage ? Visibility.Visible : Visibility.Collapsed;
+            page.Visibility = ReferenceEquals(page, selectedTab) ? Visibility.Visible : Visibility.Collapsed;
+        if (_teamLeadPage is not null)
+            _teamLeadPage.Visibility = ReferenceEquals(_teamLeadPage, selectedTab) ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private NotePageViewModel? GetCurrentVm()
     {
         var page = (_tabView.SelectedItem as TabViewItem)?.Tag as NotePage;
         return page?.DataContext as NotePageViewModel;
+    }
+
+    private async Task ShowSettingsDialog()
+    {
+        var dialog = new ContentDialog
+        {
+            Title = "Settings",
+            Content = new StackPanel
+            {
+                Spacing = 8,
+                Children =
+                {
+                    new TextBlock { Text = "App settings will be available here.", TextWrapping = TextWrapping.Wrap },
+                },
+            },
+            CloseButtonText = "Close",
+            XamlRoot = RootGrid.XamlRoot,
+        };
+        await dialog.ShowAsync();
     }
 
     private void UpdateDragRegions()

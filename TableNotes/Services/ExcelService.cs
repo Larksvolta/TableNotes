@@ -107,6 +107,14 @@ public class ExcelService
                     Col10 = columnCount >= 10 ? row.Cell(10).GetString() : string.Empty,
                     Col11 = columnCount >= 11 ? row.Cell(11).GetString() : string.Empty,
                     Col12 = columnCount >= 12 ? row.Cell(12).GetString() : string.Empty,
+                    Col13 = columnCount >= 13 ? row.Cell(13).GetString() : string.Empty,
+                    Col14 = columnCount >= 14 ? row.Cell(14).GetString() : string.Empty,
+                    Col15 = columnCount >= 15 ? row.Cell(15).GetString() : string.Empty,
+                    Col16 = columnCount >= 16 ? row.Cell(16).GetString() : string.Empty,
+                    Col17 = columnCount >= 17 ? row.Cell(17).GetString() : string.Empty,
+                    Col18 = columnCount >= 18 ? row.Cell(18).GetString() : string.Empty,
+                    Col19 = columnCount >= 19 ? row.Cell(19).GetString() : string.Empty,
+                    Col20 = columnCount >= 20 ? row.Cell(20).GetString() : string.Empty,
                 };
                 rows.Add(r);
             }
@@ -118,7 +126,7 @@ public class ExcelService
     private static string[] GetHeaders(string pageName) => pageName switch
     {
         "Checklist" => ["String ID", "Source", "Steps to Reproduce", "French", "Italian", "German", "Spanish"],
-        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish", "Bug Status"],
+        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish", "Bug Status", "French Observed Result", "French Expected Result", "Italian Observed Result", "Italian Expected Result", "German Observed Result", "German Expected Result", "Spanish Observed Result", "Spanish Expected Result"],
         "Changelog" => ["#", "Tester", "Date", "Type", "Description", "String ID", "Source", "Actual Result", "Expected Result", "Status"],
         "TextFiles" => ["String ID", "Source", "French", "Italian", "German", "Spanish"],
         _ => ["Column 1", "Column 2", "Column 3", "Column 4", "Column 5"]
@@ -151,6 +159,14 @@ public class ExcelService
                 if (headers.Length >= 10) ws.Cell(i + 2, 10).Value = rows[i].Col10;
                 if (headers.Length >= 11) ws.Cell(i + 2, 11).Value = rows[i].Col11;
                 if (headers.Length >= 12) ws.Cell(i + 2, 12).Value = rows[i].Col12;
+                if (headers.Length >= 13) ws.Cell(i + 2, 13).Value = rows[i].Col13;
+                if (headers.Length >= 14) ws.Cell(i + 2, 14).Value = rows[i].Col14;
+                if (headers.Length >= 15) ws.Cell(i + 2, 15).Value = rows[i].Col15;
+                if (headers.Length >= 16) ws.Cell(i + 2, 16).Value = rows[i].Col16;
+                if (headers.Length >= 17) ws.Cell(i + 2, 17).Value = rows[i].Col17;
+                if (headers.Length >= 18) ws.Cell(i + 2, 18).Value = rows[i].Col18;
+                if (headers.Length >= 19) ws.Cell(i + 2, 19).Value = rows[i].Col19;
+                if (headers.Length >= 20) ws.Cell(i + 2, 20).Value = rows[i].Col20;
             }
 
             ws.Columns().AdjustToContents();

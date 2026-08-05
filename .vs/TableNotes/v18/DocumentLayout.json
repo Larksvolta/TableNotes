@@ -1,12 +1,54 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\views\\teamleadpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\views\\teamleadpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|c:\\users\\larks\\documents\\default project\\tablenotes\\tablenotes\\views\\teamleadpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5B6E7F8D-1C2E-4A3B-9D8C-7E6F5A4B3C2D}|TableNotes\\TableNotes.csproj|solutionrelative:tablenotes\\views\\teamleadpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TeamLeadPage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\TeamLeadPage.xaml.cs",
+              "RelativeDocumentMoniker": "TableNotes\\Views\\TeamLeadPage.xaml.cs",
+              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\TeamLeadPage.xaml.cs",
+              "RelativeToolTip": "TableNotes\\Views\\TeamLeadPage.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T19:35:29.64Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TeamLeadPage.xaml",
+              "DocumentMoniker": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\TeamLeadPage.xaml",
+              "RelativeDocumentMoniker": "TableNotes\\Views\\TeamLeadPage.xaml",
+              "ToolTip": "C:\\Users\\larks\\Documents\\Default Project\\TableNotes\\TableNotes\\Views\\TeamLeadPage.xaml",
+              "RelativeToolTip": "TableNotes\\Views\\TeamLeadPage.xaml",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAABsAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-08-02T19:34:57.432Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

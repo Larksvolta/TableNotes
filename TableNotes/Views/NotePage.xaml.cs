@@ -47,6 +47,14 @@ public sealed partial class NotePage : UserControl
     private Segmented? _bugFormItalian;
     private Segmented? _bugFormGerman;
     private Segmented? _bugFormSpanish;
+    private TextBox? _bugFormFrenchObserved;
+    private TextBox? _bugFormFrenchExpected;
+    private TextBox? _bugFormItalianObserved;
+    private TextBox? _bugFormItalianExpected;
+    private TextBox? _bugFormGermanObserved;
+    private TextBox? _bugFormGermanExpected;
+    private TextBox? _bugFormSpanishObserved;
+    private TextBox? _bugFormSpanishExpected;
     private TextBlock? _bugFormId;
     private TextBlock? _bugFormUsername;
     private TextBlock? _bugFormDate;
@@ -456,7 +464,7 @@ public sealed partial class NotePage : UserControl
         {
             PlaceholderText = "Quick Search",
             Text = _bugQuickSearchText,
-            Width = 617,
+            Width = 955,
             HorizontalAlignment = HorizontalAlignment.Left,
         };
         quickSearch.TextChanged += (_, _) =>
@@ -557,7 +565,8 @@ public sealed partial class NotePage : UserControl
                 {
                     row.Col1, row.Col2, row.Col3, row.Col4, row.Col5,
                     row.Col6, row.Col7, row.Col8, row.Col9, row.Col10,
-                    row.Col11, row.Col12,
+                    row.Col11, row.Col12, row.Col13, row.Col14, row.Col15,
+                    row.Col16, row.Col17, row.Col18, row.Col19, row.Col20,
                 });
                 return terms.All(t => haystack.Contains(t, StringComparison.OrdinalIgnoreCase));
             });
@@ -603,6 +612,8 @@ public sealed partial class NotePage : UserControl
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(162) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(170) });
 
             var selBorder = new Border();
             if (ReferenceEquals(row, _selectedBugRow))
@@ -633,6 +644,14 @@ public sealed partial class NotePage : UserControl
             Grid.SetColumn(langPanel, 4);
             rowGrid.Children.Add(langPanel);
 
+            var missingObs = new TextBlock { Text = GetMissingLanguageInitials(row, observed: true), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
+            Grid.SetColumn(missingObs, 5);
+            rowGrid.Children.Add(missingObs);
+
+            var missingExp = new TextBlock { Text = GetMissingLanguageInitials(row, observed: false), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
+            Grid.SetColumn(missingExp, 6);
+            rowGrid.Children.Add(missingExp);
+
             rowGrid.PointerPressed += (_, _) => OnBugSelected(row);
             _bugItemsPanel.Children.Add(rowGrid);
         }
@@ -642,7 +661,7 @@ public sealed partial class NotePage : UserControl
     {
         var header = new Grid
         {
-            Height = 32,
+            Height = 44,
             ColumnDefinitions =
             {
                 new ColumnDefinition { Width = new GridLength(42) },
@@ -650,6 +669,8 @@ public sealed partial class NotePage : UserControl
                 new ColumnDefinition { Width = new GridLength(110) },
                 new ColumnDefinition { Width = GridLength.Auto },
                 new ColumnDefinition { Width = new GridLength(162) },
+                new ColumnDefinition { Width = new GridLength(170) },
+                new ColumnDefinition { Width = new GridLength(170) },
             },
             Margin = new Thickness(0, 0, 0, 6)
         };
@@ -717,6 +738,14 @@ public sealed partial class NotePage : UserControl
         var langHeader = new TextBlock { Text = "Language Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
         Grid.SetColumn(langHeader, 4);
         header.Children.Add(langHeader);
+
+        var missingObsHeader = new TextBlock { Text = "Missing Observed Result", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
+        Grid.SetColumn(missingObsHeader, 5);
+        header.Children.Add(missingObsHeader);
+
+        var missingExpHeader = new TextBlock { Text = "Missing Expected Result", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
+        Grid.SetColumn(missingExpHeader, 6);
+        header.Children.Add(missingExpHeader);
 
         return header;
     }
@@ -1039,6 +1068,31 @@ public sealed partial class NotePage : UserControl
         return seg;
     }
 
+    private static StackPanel BuildLangResultPanel(string langName, out Segmented segmented, out TextBox observed, out TextBox expected)
+    {
+        segmented = BuildLangSegmented();
+        observed = new TextBox { Header = "Observed Result", TextWrapping = TextWrapping.Wrap, AcceptsReturn = true, MinHeight = 60 };
+        expected = new TextBox { Header = "Expected Result", TextWrapping = TextWrapping.Wrap, AcceptsReturn = true, MinHeight = 60 };
+        var seg = segmented;
+        var obs = observed;
+        var exp = expected;
+        SetLangResultEnabled(seg, obs, exp);
+        seg.SelectionChanged += (_, _) => SetLangResultEnabled(seg, obs, exp);
+        var panel = new StackPanel { Spacing = 4 };
+        panel.Children.Add(new TextBlock { Text = langName, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
+        panel.Children.Add(segmented);
+        panel.Children.Add(observed);
+        panel.Children.Add(expected);
+        return panel;
+    }
+
+    private static void SetLangResultEnabled(Segmented seg, TextBox observed, TextBox expected)
+    {
+        var enabled = seg.SelectedIndex == 1;
+        observed.IsEnabled = enabled;
+        expected.IsEnabled = enabled;
+    }
+
     private static void ColorLangSegmented(Segmented seg)
     {
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
@@ -1074,6 +1128,20 @@ public sealed partial class NotePage : UserControl
         return string.IsNullOrEmpty(languageInitials) ? cleaned : $"{languageInitials} {cleaned}".Trim();
     }
 
+    private static string GetMissingLanguageInitials(TableRow row, bool observed)
+    {
+        var initials = new List<string>();
+        var fr = observed ? row.Col13 : row.Col14;
+        var it = observed ? row.Col15 : row.Col16;
+        var de = observed ? row.Col17 : row.Col18;
+        var es = observed ? row.Col19 : row.Col20;
+        if (row.Col8 == "Affected" && string.IsNullOrWhiteSpace(fr)) initials.Add("FR");
+        if (row.Col9 == "Affected" && string.IsNullOrWhiteSpace(it)) initials.Add("IT");
+        if (row.Col10 == "Affected" && string.IsNullOrWhiteSpace(de)) initials.Add("DE");
+        if (row.Col11 == "Affected" && string.IsNullOrWhiteSpace(es)) initials.Add("ES");
+        return string.Join(", ", initials);
+    }
+
     private void PopulateBugForm(TableRow? row)
     {
         if (row is null)
@@ -1089,6 +1157,14 @@ public sealed partial class NotePage : UserControl
             SetLangSegmented(_bugFormItalian!, null);
             SetLangSegmented(_bugFormGerman!, null);
             SetLangSegmented(_bugFormSpanish!, null);
+            _bugFormFrenchObserved!.Text = "";
+            _bugFormFrenchExpected!.Text = "";
+            _bugFormItalianObserved!.Text = "";
+            _bugFormItalianExpected!.Text = "";
+            _bugFormGermanObserved!.Text = "";
+            _bugFormGermanExpected!.Text = "";
+            _bugFormSpanishObserved!.Text = "";
+            _bugFormSpanishExpected!.Text = "";
             LoadScreenshotsForSelectedBug();
             return;
         }
@@ -1105,6 +1181,14 @@ public sealed partial class NotePage : UserControl
         SetLangSegmented(_bugFormItalian!, row.Col9);
         SetLangSegmented(_bugFormGerman!, row.Col10);
         SetLangSegmented(_bugFormSpanish!, row.Col11);
+        _bugFormFrenchObserved!.Text = row.Col13;
+        _bugFormFrenchExpected!.Text = row.Col14;
+        _bugFormItalianObserved!.Text = row.Col15;
+        _bugFormItalianExpected!.Text = row.Col16;
+        _bugFormGermanObserved!.Text = row.Col17;
+        _bugFormGermanExpected!.Text = row.Col18;
+        _bugFormSpanishObserved!.Text = row.Col19;
+        _bugFormSpanishExpected!.Text = row.Col20;
         LoadScreenshotsForSelectedBug();
     }
 
@@ -1124,6 +1208,14 @@ public sealed partial class NotePage : UserControl
         row.Col9 = _bugFormItalian?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
         row.Col10 = _bugFormGerman?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
         row.Col11 = _bugFormSpanish?.SelectedIndex switch { 0 => "Not Affected", 1 => "Affected", _ => "" } ?? "";
+        row.Col13 = _bugFormFrenchObserved?.Text ?? "";
+        row.Col14 = _bugFormFrenchExpected?.Text ?? "";
+        row.Col15 = _bugFormItalianObserved?.Text ?? "";
+        row.Col16 = _bugFormItalianExpected?.Text ?? "";
+        row.Col17 = _bugFormGermanObserved?.Text ?? "";
+        row.Col18 = _bugFormGermanExpected?.Text ?? "";
+        row.Col19 = _bugFormSpanishObserved?.Text ?? "";
+        row.Col20 = _bugFormSpanishExpected?.Text ?? "";
 
         var note = vm.SelectedNote;
         if (note is not null)
@@ -1193,16 +1285,10 @@ public sealed partial class NotePage : UserControl
         var langRow1 = new Grid { ColumnSpacing = 16 };
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
         langRow1.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormFrench = BuildLangSegmented();
-        _bugFormItalian = BuildLangSegmented();
-        var frenchPanel = new StackPanel { Spacing = 4 };
-        frenchPanel.Children.Add(new TextBlock { Text = "French", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-        frenchPanel.Children.Add(_bugFormFrench);
+        var frenchPanel = BuildLangResultPanel("French", out _bugFormFrench, out _bugFormFrenchObserved, out _bugFormFrenchExpected);
         Grid.SetColumn(frenchPanel, 0);
         langRow1.Children.Add(frenchPanel);
-        var italianPanel = new StackPanel { Spacing = 4 };
-        italianPanel.Children.Add(new TextBlock { Text = "Italian", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-        italianPanel.Children.Add(_bugFormItalian);
+        var italianPanel = BuildLangResultPanel("Italian", out _bugFormItalian, out _bugFormItalianObserved, out _bugFormItalianExpected);
         Grid.SetColumn(italianPanel, 1);
         langRow1.Children.Add(italianPanel);
         form.Children.Add(langRow1);
@@ -1210,16 +1296,10 @@ public sealed partial class NotePage : UserControl
         var langRow2 = new Grid { ColumnSpacing = 16 };
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
         langRow2.ColumnDefinitions.Add(new ColumnDefinition());
-        _bugFormGerman = BuildLangSegmented();
-        _bugFormSpanish = BuildLangSegmented();
-        var germanPanel = new StackPanel { Spacing = 4 };
-        germanPanel.Children.Add(new TextBlock { Text = "German", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-        germanPanel.Children.Add(_bugFormGerman);
+        var germanPanel = BuildLangResultPanel("German", out _bugFormGerman, out _bugFormGermanObserved, out _bugFormGermanExpected);
         Grid.SetColumn(germanPanel, 0);
         langRow2.Children.Add(germanPanel);
-        var spanishPanel = new StackPanel { Spacing = 4 };
-        spanishPanel.Children.Add(new TextBlock { Text = "Spanish", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });
-        spanishPanel.Children.Add(_bugFormSpanish);
+        var spanishPanel = BuildLangResultPanel("Spanish", out _bugFormSpanish, out _bugFormSpanishObserved, out _bugFormSpanishExpected);
         Grid.SetColumn(spanishPanel, 1);
         langRow2.Children.Add(spanishPanel);
         form.Children.Add(langRow2);

@@ -17,6 +17,14 @@ public class TableRow : INotifyPropertyChanged
     private string _col10 = string.Empty;
     private string _col11 = string.Empty;
     private string _col12 = string.Empty;
+    private string _col13 = string.Empty;
+    private string _col14 = string.Empty;
+    private string _col15 = string.Empty;
+    private string _col16 = string.Empty;
+    private string _col17 = string.Empty;
+    private string _col18 = string.Empty;
+    private string _col19 = string.Empty;
+    private string _col20 = string.Empty;
 
     public string Col1 { get => _col1; set { if (_col1 != value) { _col1 = value; OnPropertyChanged(); } } }
     public string Col2 { get => _col2; set { if (_col2 != value) { _col2 = value; OnPropertyChanged(); } } }
@@ -30,8 +38,15 @@ public class TableRow : INotifyPropertyChanged
     public string Col10 { get => _col10; set { if (_col10 != value) { _col10 = value; OnPropertyChanged(); } } }
     public string Col11 { get => _col11; set { if (_col11 != value) { _col11 = value; OnPropertyChanged(); } } }
     public string Col12 { get => _col12; set { if (_col12 != value) { _col12 = value; OnPropertyChanged(); } } }
+    public string Col13 { get => _col13; set { if (_col13 != value) { _col13 = value; OnPropertyChanged(); } } }
+    public string Col14 { get => _col14; set { if (_col14 != value) { _col14 = value; OnPropertyChanged(); } } }
+    public string Col15 { get => _col15; set { if (_col15 != value) { _col15 = value; OnPropertyChanged(); } } }
+    public string Col16 { get => _col16; set { if (_col16 != value) { _col16 = value; OnPropertyChanged(); } } }
+    public string Col17 { get => _col17; set { if (_col17 != value) { _col17 = value; OnPropertyChanged(); } } }
+    public string Col18 { get => _col18; set { if (_col18 != value) { _col18 = value; OnPropertyChanged(); } } }
+    public string Col19 { get => _col19; set { if (_col19 != value) { _col19 = value; OnPropertyChanged(); } } }
+    public string Col20 { get => _col20; set { if (_col20 != value) { _col20 = value; OnPropertyChanged(); } } }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string name = "") =>
+    public event PropertyChangedEventHandler? PropertyChanged;    private void OnPropertyChanged([CallerMemberName] string name = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
