@@ -471,7 +471,7 @@ public sealed partial class NotePage : UserControl
         {
             PlaceholderText = "Quick Search",
             Text = _bugQuickSearchText,
-            Width = 902,
+            Width = 914,
             HorizontalAlignment = HorizontalAlignment.Left,
         };
         quickSearch.TextChanged += (_, _) =>
@@ -619,7 +619,7 @@ public sealed partial class NotePage : UserControl
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(260) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(162) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
@@ -681,7 +681,7 @@ public sealed partial class NotePage : UserControl
                 new ColumnDefinition { Width = new GridLength(260) },
                 new ColumnDefinition { Width = new GridLength(100) },
                 new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(150) },
+                new ColumnDefinition { Width = new GridLength(162) },
                 new ColumnDefinition { Width = new GridLength(140) },
                 new ColumnDefinition { Width = new GridLength(140) },
                 new ColumnDefinition { Width = new GridLength(120) },
@@ -1560,16 +1560,34 @@ public sealed partial class NotePage : UserControl
     {
         var langVals = new[] { row.Col8, row.Col9, row.Col10, row.Col11 };
         var langLabels = new[] { "FR", "IT", "DE", "ES" };
-        var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
-        var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xC8, 0xE6, 0xC9));
+        var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0x00, 0x00));
+        var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+        var black = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
 
-        var segmented = new Segmented { IsEnabled = false };
+        var segmented = new Segmented
+        {
+            IsEnabled = false,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            BorderBrush = black,
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(3),
+        };
         for (int i = 0; i < 4; i++)
         {
             var item = new SegmentedItem
             {
-                Content = new TextBlock { Text = langLabels[i], FontSize = 11 },
+                Content = new TextBlock
+                {
+                    Text = langLabels[i],
+                    FontSize = 11,
+                    FontWeight = Microsoft.UI.Text.FontWeights.Bold,
+                    Foreground = black,
+                },
                 Padding = new Thickness(8, 2, 8, 2),
+                MinWidth = 36,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                BorderBrush = black,
+                BorderThickness = new Thickness(1),
             };
             var bg = langVals[i] == "Affected" ? red : langVals[i] == "Not Affected" ? green : null;
             if (bg is not null)
