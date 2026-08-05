@@ -83,11 +83,36 @@ public sealed partial class NotePage : UserControl
     private string _bugQuickSearchText = string.Empty;
     private HashSet<string> _bugStatusFilterSet = new();
     private HashSet<string> _summaryFilterSet = new();
-    private TextBlock? _numSortArrow;
-    private TextBlock? _summarySortArrow;
-    private TextBlock? _bugStatusSortArrow;
+    private readonly Dictionary<string, TextBlock> _bugSortArrows = new();
+    private readonly Dictionary<string, HashSet<string>> _bugFilterSets = new();
     private StackPanel? _bugItemsPanel;
     private Grid? _bugHeaderGrid;
+
+    private static readonly double[] _bugColumnWidths =
+    {
+        42, 200, 96,
+        36, 36, 36, 36,
+        36, 36, 36, 36,
+        36, 36, 36, 36,
+        36, 36, 36, 36,
+    };
+
+    private static readonly string[] _bugSortKeys =
+    {
+        "Col1", "Col5", "Col12",
+        "Col8", "Col9", "Col10", "Col11",
+        "MissObsFR", "MissObsIT", "MissObsDE", "MissObsES",
+        "MissExpFR", "MissExpIT", "MissExpDE", "MissExpES",
+        "MissShotFR", "MissShotIT", "MissShotDE", "MissShotES",
+    };
+
+    private static readonly (string Key, int StatusCol, int ObsCol, int ExpCol)[] _langMeta =
+    {
+        ("FR", 8, 13, 14),
+        ("IT", 9, 15, 16),
+        ("DE", 10, 17, 18),
+        ("ES", 11, 19, 20),
+    };
 
     static NotePage()
     {
@@ -532,11 +557,26 @@ public sealed partial class NotePage : UserControl
         RebuildBugTrackerRows();
     }
 
+    private void SortBy(string column, bool ascending)
+    {
+        _bugSortColumn = column;
+        _bugSortAscending = ascending;
+        UpdateSortIndicators();
+        RebuildBugTrackerRows();
+    }
+
+    private void ClearSort()
+    {
+        _bugSortColumn = "";
+        _bugSortAscending = true;
+        UpdateSortIndicators();
+        RebuildBugTrackerRows();
+    }
+
     private void UpdateSortIndicators()
     {
-        SetArrow(_numSortArrow, _bugSortColumn == "Col1");
-        SetArrow(_summarySortArrow, _bugSortColumn == "Col5");
-        SetArrow(_bugStatusSortArrow, _bugSortColumn == "Col12");
+        foreach (var kvp in _bugSortArrows)
+            SetArrow(kvp.Value, _bugSortColumn == kvp.Key);
     }
 
     private void SetArrow(TextBlock? arrow, bool isActive)
@@ -592,78 +632,67 @@ public sealed partial class NotePage : UserControl
                 !string.IsNullOrEmpty(row.Col12) && _bugStatusFilterSet.Contains(row.Col12));
         }
 
+        foreach (var kvp in _bugFilterSets)
+        {
+            if (kvp.Value.Count == 0) continue;
+            var (kind, lang) = KindOfSortKey(kvp.Key);
+            filtered = filtered.Where(row => kvp.Value.Contains(CellStatus(row, kind, lang)));
+        }
+
         if (!string.IsNullOrEmpty(_bugSortColumn))
         {
-            filtered = _bugSortColumn switch
-            {
-                "Col1" => _bugSortAscending
-                    ? filtered.OrderBy(row => int.TryParse(row.Col1, out var n) ? n : 0)
-                    : filtered.OrderByDescending(row => int.TryParse(row.Col1, out var n) ? n : 0),
-                "Col5" => _bugSortAscending
-                    ? filtered.OrderBy(row => row.Col5 ?? "")
-                    : filtered.OrderByDescending(row => row.Col5 ?? ""),
-                "Col12" => _bugSortAscending
-                    ? filtered.OrderBy(row => row.Col12 ?? "")
-                    : filtered.OrderByDescending(row => row.Col12 ?? ""),
-                _ => filtered
-            };
+            filtered = _bugSortAscending
+                ? filtered.OrderBy(row => GetBugSortKey(row, _bugSortColumn))
+                : filtered.OrderByDescending(row => GetBugSortKey(row, _bugSortColumn));
         }
 
         var list = filtered.ToList();
+        var stroke = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
+
+        Border MakeCell(FrameworkElement content)
+        {
+            return new Border
+            {
+                BorderBrush = stroke,
+                BorderThickness = new Thickness(0, 0, 1, 1),
+                Child = content,
+            };
+        }
+
         for (int i = 0; i < list.Count; i++)
         {
             var row = list[i];
 
             var rowGrid = new Grid { Height = 40, Margin = new Thickness(1, 0, 1, 0) };
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(42) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(260) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(162) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(140) });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
+            foreach (var w in _bugColumnWidths)
+                rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(w) });
 
-            var selBorder = new Border();
+            var selBorder = new Border { IsHitTestVisible = false };
             if (ReferenceEquals(row, _selectedBugRow))
                 selBorder.Background = GetBugStatusColor(row.Col12);
-            Grid.SetColumnSpan(selBorder, 3);
+            Grid.SetColumnSpan(selBorder, rowGrid.ColumnDefinitions.Count);
             rowGrid.Children.Add(selBorder);
 
-            rowGrid.Children.Add(new TextBlock { Text = row.Col1, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis });
-            var st = new TextBlock { Text = row.Col5, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis };
-            Grid.SetColumn(st, 1);
-            rowGrid.Children.Add(st);
-
-            var sp = BuildStatusPanel(row);
-            Grid.SetColumn(sp, 2);
-            rowGrid.Children.Add(sp);
-
-            var langSep = new Border
+            var cells = new List<FrameworkElement>
             {
-                Width = 1,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Margin = new Thickness(0, 0, 8, 0),
-                Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
+                MakeCell(new TextBlock { Text = row.Col1, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis }),
+                MakeCell(new TextBlock { Text = row.Col5, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis }),
+                MakeCell(BuildStatusPanel(row)),
             };
-            Grid.SetColumn(langSep, 3);
-            rowGrid.Children.Add(langSep);
+            foreach (var (key, _, _, _) in _langMeta)
+                cells.Add(MakeCell(BuildLangCell(key, LangCellStatus(row, key), "Lang")));
+            foreach (var (key, _, _, _) in _langMeta)
+                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Obs", key), "Obs")));
+            foreach (var (key, _, _, _) in _langMeta)
+                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Exp", key), "Exp")));
+            foreach (var (key, _, _, _) in _langMeta)
+                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Shot", key), "Shot")));
 
-            var langPanel = BuildLanguagePanel(row);
-            Grid.SetColumn(langPanel, 4);
-            rowGrid.Children.Add(langPanel);
-
-            var missingObs = new TextBlock { Text = GetMissingLanguageInitials(row, observed: true), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
-            Grid.SetColumn(missingObs, 5);
-            rowGrid.Children.Add(missingObs);
-
-            var missingExp = new TextBlock { Text = GetMissingLanguageInitials(row, observed: false), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
-            Grid.SetColumn(missingExp, 6);
-            rowGrid.Children.Add(missingExp);
-
-            var missingShot = new TextBlock { Text = GetMissingScreenshotInitials(row), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold };
-            Grid.SetColumn(missingShot, 7);
-            rowGrid.Children.Add(missingShot);
+            for (int c = 0; c < cells.Count; c++)
+            {
+                Grid.SetColumn(cells[c], c);
+                rowGrid.Children.Add(cells[c]);
+            }
 
             rowGrid.PointerPressed += (_, _) => OnBugSelected(row);
             _bugItemsPanel.Children.Add(rowGrid);
@@ -674,22 +703,19 @@ public sealed partial class NotePage : UserControl
     {
         var header = new Grid
         {
-            Height = 44,
-            ColumnDefinitions =
-            {
-                new ColumnDefinition { Width = new GridLength(42) },
-                new ColumnDefinition { Width = new GridLength(260) },
-                new ColumnDefinition { Width = new GridLength(100) },
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(162) },
-                new ColumnDefinition { Width = new GridLength(140) },
-                new ColumnDefinition { Width = new GridLength(140) },
-                new ColumnDefinition { Width = new GridLength(120) },
-            },
+            Width = 914,
+            HorizontalAlignment = HorizontalAlignment.Left,
             Margin = new Thickness(0, 0, 0, 6)
         };
+        foreach (var w in _bugColumnWidths)
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(w) });
+        header.RowDefinitions.Add(new RowDefinition { Height = new GridLength(26) });
+        header.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24) });
 
         var bold = Microsoft.UI.Text.FontWeights.SemiBold;
+        var stroke = Application.Current.Resources["CardStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
+        var headerBg = Application.Current.Resources["SubtleFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x0A, 0, 0, 0));
+        var textFg = Application.Current.Resources["TextFillColorPrimaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0, 0, 0));
 
         static Button MakeFilterBtn(string tag)
         {
@@ -710,60 +736,112 @@ public sealed partial class NotePage : UserControl
             return btn;
         }
 
-        var numHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-        numHeader.Children.Add(new TextBlock { Text = "#", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
-        _numSortArrow = new TextBlock { Text = sortedColumn == "Col1" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
-        numHeader.Children.Add(_numSortArrow);
-        numHeader.Tapped += (_, _) => ToggleSort("Col1");
-        header.Children.Add(numHeader);
+        void AddSortableCell(int row, int col, string text, string sortKey, Button? filterBtn, bool spanBoth)
+        {
+            var sp = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+            sp.Children.Add(new TextBlock { Text = text, FontWeight = bold, Foreground = textFg, VerticalAlignment = VerticalAlignment.Center });
+            var arrow = new TextBlock { FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+            _bugSortArrows[sortKey] = arrow;
+            sp.Children.Add(arrow);
+            if (filterBtn is not null)
+                sp.Children.Add(filterBtn);
+            sp.Tapped += (_, _) => ToggleSort(sortKey);
+            var cell = new Border
+            {
+                Background = headerBg,
+                BorderBrush = stroke,
+                BorderThickness = new Thickness(0, 0, 1, 1),
+                Padding = new Thickness(4, 0, 4, 0),
+                Child = sp,
+            };
+            Grid.SetColumn(cell, col);
+            Grid.SetRow(cell, row);
+            if (spanBoth)
+                Grid.SetRowSpan(cell, 2);
+            header.Children.Add(cell);
+        }
 
-        var summaryHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-        summaryHeader.Children.Add(new TextBlock { Text = "Summary", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
-        _summarySortArrow = new TextBlock { Text = sortedColumn == "Col5" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
-        summaryHeader.Children.Add(_summarySortArrow);
+        void AddGroupCell(int col, int span, string text)
+        {
+            var cell = new Border
+            {
+                Background = headerBg,
+                BorderBrush = stroke,
+                BorderThickness = new Thickness(0, 0, 1, 0),
+                Padding = new Thickness(12, 0, 12, 0),
+                Child = new TextBlock
+                {
+                    Text = text,
+                    FontWeight = bold,
+                    Foreground = textFg,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxLines = 2,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                },
+            };
+            Grid.SetColumn(cell, col);
+            Grid.SetColumnSpan(cell, span);
+            Grid.SetRow(cell, 0);
+            header.Children.Add(cell);
+        }
+
+        void AddSubHeaderCell(int col, string sortKey, string langKey)
+        {
+            var sp = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+            var arrow = new TextBlock { FontSize = 9, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 2, 0) };
+            _bugSortArrows[sortKey] = arrow;
+            var btn = new Button
+            {
+                Content = "\uE712",
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 10,
+                Width = 18,
+                Height = 18,
+                Padding = new Thickness(0),
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            btn.Click += (_, _) => BuildLangFilterPopup(btn, sortKey, langKey);
+            sp.Children.Add(arrow);
+            sp.Children.Add(btn);
+            var cell = new Border
+            {
+                Background = headerBg,
+                BorderBrush = stroke,
+                BorderThickness = new Thickness(0, 0, 1, 1),
+                Padding = new Thickness(0),
+                Child = sp,
+            };
+            Grid.SetColumn(cell, col);
+            Grid.SetRow(cell, 1);
+            header.Children.Add(cell);
+        }
+
         var summaryFilterBtn = MakeFilterBtn("Summary");
         summaryFilterBtn.Click += (_, _) => BuildFilterPopup(summaryFilterBtn);
-        summaryHeader.Children.Add(summaryFilterBtn);
-        summaryHeader.Tapped += (_, _) => ToggleSort("Col5");
-        Grid.SetColumn(summaryHeader, 1);
-        header.Children.Add(summaryHeader);
-
-        var statusHeader = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-        statusHeader.Children.Add(new TextBlock { Text = "Bug Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center });
-        _bugStatusSortArrow = new TextBlock { Text = sortedColumn == "Col12" ? (sortAscending ? "\u2191" : "\u2193") : "", FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
-        statusHeader.Children.Add(_bugStatusSortArrow);
         var statusFilterBtn = MakeFilterBtn("Status");
         statusFilterBtn.Click += (_, _) => BuildFilterPopup(statusFilterBtn);
-        statusHeader.Children.Add(statusFilterBtn);
-        statusHeader.Tapped += (_, _) => ToggleSort("Col12");
-        Grid.SetColumn(statusHeader, 2);
-        header.Children.Add(statusHeader);
 
-        var langSep = new Border
+        AddSortableCell(0, 0, "#", "Col1", null, spanBoth: true);
+        AddSortableCell(0, 1, "Summary", "Col5", summaryFilterBtn, spanBoth: true);
+        AddSortableCell(0, 2, "Bug Status", "Col12", statusFilterBtn, spanBoth: true);
+
+        AddGroupCell(3, 4, "Language Status");
+        AddGroupCell(7, 4, "Observed Results");
+        AddGroupCell(11, 4, "Expected Results");
+        AddGroupCell(15, 4, "Screenshots");
+
+        for (int g = 0; g < 4; g++)
         {
-            Width = 1,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Margin = new Thickness(0, 0, 8, 0),
-            Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)),
-        };
-        Grid.SetColumn(langSep, 3);
-        header.Children.Add(langSep);
-
-        var langHeader = new TextBlock { Text = "Language Status", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
-        Grid.SetColumn(langHeader, 4);
-        header.Children.Add(langHeader);
-
-        var missingObsHeader = new TextBlock { Text = "Missing Observed Result", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
-        Grid.SetColumn(missingObsHeader, 5);
-        header.Children.Add(missingObsHeader);
-
-        var missingExpHeader = new TextBlock { Text = "Missing Expected Result", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
-        Grid.SetColumn(missingExpHeader, 6);
-        header.Children.Add(missingExpHeader);
-
-        var missingShotHeader = new TextBlock { Text = "Missing Screenshot", FontWeight = bold, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
-        Grid.SetColumn(missingShotHeader, 7);
-        header.Children.Add(missingShotHeader);
+            for (int l = 0; l < _langMeta.Length; l++)
+            {
+                var col = 3 + g * 4 + l;
+                AddSubHeaderCell(col, _bugSortKeys[col], _langMeta[l].Key);
+            }
+        }
 
         return header;
     }
@@ -831,6 +909,90 @@ public sealed partial class NotePage : UserControl
         searchBox.TextChanged += (_, _) => RefreshList();
         popup.Children.Add(searchBox);
         popup.Children.Add(scroll);
+
+        var btnRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
+        var selectAllBtn = new Button { Content = "Select All" };
+        selectAllBtn.Click += (_, _) =>
+        {
+            foreach (var v in values) filterSet.Add(v);
+            RefreshList();
+            RebuildBugTrackerRows();
+        };
+        var clearBtn = new Button { Content = "Clear" };
+        clearBtn.Click += (_, _) =>
+        {
+            filterSet.Clear();
+            RefreshList();
+            RebuildBugTrackerRows();
+        };
+        btnRow.Children.Add(selectAllBtn);
+        btnRow.Children.Add(clearBtn);
+        popup.Children.Add(btnRow);
+
+        RefreshList();
+
+        var flyout = new Flyout { Content = popup };
+        flyout.ShowAt(target);
+    }
+
+    private void BuildLangFilterPopup(FrameworkElement target, string sortKey, string langKey)
+    {
+        var (kind, _) = KindOfSortKey(sortKey);
+        var values = kind == "Lang"
+            ? new List<string> { "Affected", "Not Affected", "Pending" }
+            : new List<string> { "N/A", "Pending", "Done" };
+        if (!_bugFilterSets.TryGetValue(sortKey, out var filterSet))
+        {
+            filterSet = new HashSet<string>();
+            _bugFilterSets[sortKey] = filterSet;
+        }
+
+        var kindLabel = kind switch
+        {
+            "Lang" => "Language Status",
+            "Obs" => "Observed Result",
+            "Exp" => "Expected Result",
+            _ => "Screenshot",
+        };
+
+        var popup = new StackPanel { Spacing = 4, Padding = new Thickness(12), Width = 220 };
+
+        popup.Children.Add(new TextBlock { Text = $"{langKey} — {kindLabel}", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) });
+
+        Button MakeSortItem(string text, Action action)
+        {
+            var b = new Button
+            {
+                Content = text,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(4, 2, 4, 2),
+            };
+            b.Click += (_, _) => action();
+            return b;
+        }
+
+        popup.Children.Add(MakeSortItem("Sort Ascending", () => SortBy(sortKey, true)));
+        popup.Children.Add(MakeSortItem("Sort Descending", () => SortBy(sortKey, false)));
+        popup.Children.Add(MakeSortItem("Clear Sorting", ClearSort));
+
+        popup.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
+
+        var checkList = new StackPanel { Spacing = 2 };
+        void RefreshList()
+        {
+            checkList.Children.Clear();
+            foreach (var v in values)
+            {
+                var cb = new CheckBox { Content = v, IsChecked = filterSet.Contains(v) };
+                var s = v;
+                cb.Checked += (_, _) => { filterSet.Add(s); RebuildBugTrackerRows(); };
+                cb.Unchecked += (_, _) => { filterSet.Remove(s); RebuildBugTrackerRows(); };
+                checkList.Children.Add(cb);
+            }
+        }
+        popup.Children.Add(checkList);
 
         var btnRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Spacing = 8, Margin = new Thickness(0, 4, 0, 0) };
         var selectAllBtn = new Button { Content = "Select All" };
@@ -1265,35 +1427,105 @@ public sealed partial class NotePage : UserControl
         return string.IsNullOrEmpty(languageInitials) ? cleaned : $"{languageInitials} {cleaned}".Trim();
     }
 
-    private static string GetMissingLanguageInitials(TableRow row, bool observed)
+    private static string LangSortKey(string? value) => value switch
     {
-        if (row.Col23 != "Yes")
-            return string.Empty;
-        var initials = new List<string>();
-        var fr = observed ? row.Col13 : row.Col14;
-        var it = observed ? row.Col15 : row.Col16;
-        var de = observed ? row.Col17 : row.Col18;
-        var es = observed ? row.Col19 : row.Col20;
-        if (row.Col8 == "Affected" && string.IsNullOrWhiteSpace(fr)) initials.Add("FR");
-        if (row.Col9 == "Affected" && string.IsNullOrWhiteSpace(it)) initials.Add("IT");
-        if (row.Col10 == "Affected" && string.IsNullOrWhiteSpace(de)) initials.Add("DE");
-        if (row.Col11 == "Affected" && string.IsNullOrWhiteSpace(es)) initials.Add("ES");
-        return string.Join(", ", initials);
+        "Affected" => "0",
+        "Not Affected" => "1",
+        _ => "2",
+    };
+
+    private static string ColOf(TableRow row, int col) => col switch
+    {
+        8 => row.Col8,
+        9 => row.Col9,
+        10 => row.Col10,
+        11 => row.Col11,
+        13 => row.Col13,
+        14 => row.Col14,
+        15 => row.Col15,
+        16 => row.Col16,
+        17 => row.Col17,
+        18 => row.Col18,
+        19 => row.Col19,
+        20 => row.Col20,
+        _ => "",
+    };
+
+    private static (string Kind, string Lang) KindOfSortKey(string sortKey)
+    {
+        if (sortKey.StartsWith("MissObs")) return ("Obs", sortKey[7..]);
+        if (sortKey.StartsWith("MissExp")) return ("Exp", sortKey[7..]);
+        if (sortKey.StartsWith("MissShot")) return ("Shot", sortKey[8..]);
+        if (sortKey.StartsWith("Col") && int.TryParse(sortKey[3..], out var col))
+        {
+            foreach (var m in _langMeta)
+                if (m.StatusCol == col)
+                    return ("Lang", m.Key);
+        }
+        return ("Lang", "");
     }
 
-    private string GetMissingScreenshotInitials(TableRow row)
+    private string LangCellStatus(TableRow row, string langKey)
     {
-        var vm = GetVm();
-        if (vm?.SelectedNote is null)
-            return string.Empty;
-        var with = _screenshotStore.GetLanguagesWithScreenshots(vm.SelectedNote.FileName, row.Col1);
-        var initials = new List<string>();
-        if (row.Col8 == "Affected" && !with.Contains("FR")) initials.Add("FR");
-        if (row.Col9 == "Affected" && !with.Contains("IT")) initials.Add("IT");
-        if (row.Col10 == "Affected" && !with.Contains("DE")) initials.Add("DE");
-        if (row.Col11 == "Affected" && !with.Contains("ES")) initials.Add("ES");
-        return string.Join(", ", initials);
+        var meta = _langMeta.FirstOrDefault(m => m.Key == langKey);
+        var v = meta.Key is null ? "" : ColOf(row, meta.StatusCol);
+        return string.IsNullOrWhiteSpace(v) ? "Pending" : v;
     }
+
+    private string CellStatus(TableRow row, string kind, string langKey) => kind switch
+    {
+        "Obs" or "Exp" or "Shot" => MissingCellStatus(row, kind, langKey) switch
+        {
+            "Missing" => "Pending",
+            "Ok" => "Done",
+            _ => "N/A",
+        },
+        _ => LangCellStatus(row, langKey),
+    };
+
+    private string? MissingCellStatus(TableRow row, string kind, string langKey)
+    {
+        var meta = _langMeta.FirstOrDefault(m => m.Key == langKey);
+        if (meta.Key is null)
+            return null;
+        if (ColOf(row, meta.StatusCol) != "Affected")
+            return null;
+        if (kind == "Shot")
+        {
+            var vm = GetVm();
+            if (vm?.SelectedNote is null)
+                return null;
+            var with = _screenshotStore.GetLanguagesWithScreenshots(vm.SelectedNote.FileName, row.Col1);
+            return with.Contains(langKey) ? "Ok" : "Missing";
+        }
+        if (row.Col23 != "Yes")
+            return null;
+        var targetCol = kind == "Obs" ? meta.ObsCol : meta.ExpCol;
+        return string.IsNullOrWhiteSpace(ColOf(row, targetCol)) ? "Missing" : "Ok";
+    }
+
+    private string MissingRank(TableRow row, string kind, string langKey) =>
+        MissingCellStatus(row, kind, langKey) switch
+        {
+            "Missing" => "0",
+            "Ok" => "1",
+            _ => "2",
+        };
+
+    private string GetBugSortKey(TableRow row, string column) => column switch
+    {
+        "Col1" => int.TryParse(row.Col1, out var n) ? n.ToString("D10") : row.Col1 ?? "",
+        "Col5" => row.Col5 ?? "",
+        "Col12" => row.Col12 ?? "",
+        "Col8" => LangSortKey(row.Col8),
+        "Col9" => LangSortKey(row.Col9),
+        "Col10" => LangSortKey(row.Col10),
+        "Col11" => LangSortKey(row.Col11),
+        var c when c.StartsWith("MissObs") => MissingRank(row, "Obs", c[7..]),
+        var c when c.StartsWith("MissExp") => MissingRank(row, "Exp", c[7..]),
+        var c when c.StartsWith("MissShot") => MissingRank(row, "Shot", c[8..]),
+        _ => row.Col5 ?? "",
+    };
 
     private void PopulateBugForm(TableRow? row)
     {
@@ -1556,45 +1788,40 @@ public sealed partial class NotePage : UserControl
         return tb;
     }
 
-    private static FrameworkElement BuildLanguagePanel(TableRow row)
+    private static FrameworkElement BuildLangCell(string label, string? status, string kind)
     {
-        var langVals = new[] { row.Col8, row.Col9, row.Col10, row.Col11 };
-        var langLabels = new[] { "FR", "IT", "DE", "ES" };
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0x00, 0x00));
         var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+        var grey = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x6F, 0x6F, 0x6F));
         var black = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
-
-        var segmented = new Segmented
-        {
-            IsEnabled = false,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            BorderBrush = black,
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(3),
-        };
-        for (int i = 0; i < 4; i++)
-        {
-            var item = new SegmentedItem
+        var bg = kind == "Lang"
+            ? status switch
             {
-                Content = new TextBlock
-                {
-                    Text = langLabels[i],
-                    FontSize = 11,
-                    FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-                    Foreground = black,
-                },
-                Padding = new Thickness(8, 2, 8, 2),
-                MinWidth = 36,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                BorderBrush = black,
-                BorderThickness = new Thickness(1),
+                "Affected" => red,
+                "Not Affected" => green,
+                _ => grey,
+            }
+            : status switch
+            {
+                "Pending" => red,
+                "Done" => green,
+                _ => grey,
             };
-            var bg = langVals[i] == "Affected" ? red : langVals[i] == "Not Affected" ? green : null;
-            if (bg is not null)
-                item.Background = bg;
-            segmented.Items.Add(item);
-        }
-        return segmented;
+        return new Border
+        {
+            Background = bg,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            Child = new TextBlock
+            {
+                Text = label,
+                Foreground = black,
+                FontWeight = Microsoft.UI.Text.FontWeights.Bold,
+                FontSize = 12,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            },
+        };
     }
 
     private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
