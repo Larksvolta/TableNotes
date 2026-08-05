@@ -55,6 +55,9 @@ public sealed partial class NotePage : UserControl
     private TextBox? _bugFormGermanExpected;
     private TextBox? _bugFormSpanishObserved;
     private TextBox? _bugFormSpanishExpected;
+    private TextBox? _bugFormGlobalObserved;
+    private TextBox? _bugFormGlobalExpected;
+    private CheckBox? _bugFormNeedsLangSpecific;
     private TextBlock? _bugFormId;
     private TextBlock? _bugFormUsername;
     private TextBlock? _bugFormDate;
@@ -567,6 +570,7 @@ public sealed partial class NotePage : UserControl
                     row.Col6, row.Col7, row.Col8, row.Col9, row.Col10,
                     row.Col11, row.Col12, row.Col13, row.Col14, row.Col15,
                     row.Col16, row.Col17, row.Col18, row.Col19, row.Col20,
+                    row.Col21, row.Col22, row.Col23,
                 });
                 return terms.All(t => haystack.Contains(t, StringComparison.OrdinalIgnoreCase));
             });
@@ -1093,6 +1097,23 @@ public sealed partial class NotePage : UserControl
         expected.IsEnabled = enabled;
     }
 
+    private void UpdateLangResultVisibility()
+    {
+        var show = _bugFormNeedsLangSpecific?.IsChecked == true;
+        var boxes = new[]
+        {
+            _bugFormFrenchObserved, _bugFormFrenchExpected,
+            _bugFormItalianObserved, _bugFormItalianExpected,
+            _bugFormGermanObserved, _bugFormGermanExpected,
+            _bugFormSpanishObserved, _bugFormSpanishExpected,
+        };
+        foreach (var b in boxes)
+        {
+            if (b is not null)
+                b.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
     private static void ColorLangSegmented(Segmented seg)
     {
         var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0xCD, 0xD2));
@@ -1130,6 +1151,8 @@ public sealed partial class NotePage : UserControl
 
     private static string GetMissingLanguageInitials(TableRow row, bool observed)
     {
+        if (row.Col23 != "Yes")
+            return string.Empty;
         var initials = new List<string>();
         var fr = observed ? row.Col13 : row.Col14;
         var it = observed ? row.Col15 : row.Col16;
@@ -1165,6 +1188,10 @@ public sealed partial class NotePage : UserControl
             _bugFormGermanExpected!.Text = "";
             _bugFormSpanishObserved!.Text = "";
             _bugFormSpanishExpected!.Text = "";
+            _bugFormGlobalObserved!.Text = "";
+            _bugFormGlobalExpected!.Text = "";
+            _bugFormNeedsLangSpecific!.IsChecked = false;
+            UpdateLangResultVisibility();
             LoadScreenshotsForSelectedBug();
             return;
         }
@@ -1189,6 +1216,10 @@ public sealed partial class NotePage : UserControl
         _bugFormGermanExpected!.Text = row.Col18;
         _bugFormSpanishObserved!.Text = row.Col19;
         _bugFormSpanishExpected!.Text = row.Col20;
+        _bugFormGlobalObserved!.Text = row.Col21;
+        _bugFormGlobalExpected!.Text = row.Col22;
+        _bugFormNeedsLangSpecific!.IsChecked = row.Col23 == "Yes";
+        UpdateLangResultVisibility();
         LoadScreenshotsForSelectedBug();
     }
 
@@ -1216,6 +1247,9 @@ public sealed partial class NotePage : UserControl
         row.Col18 = _bugFormGermanExpected?.Text ?? "";
         row.Col19 = _bugFormSpanishObserved?.Text ?? "";
         row.Col20 = _bugFormSpanishExpected?.Text ?? "";
+        row.Col21 = _bugFormGlobalObserved?.Text ?? "";
+        row.Col22 = _bugFormGlobalExpected?.Text ?? "";
+        row.Col23 = _bugFormNeedsLangSpecific?.IsChecked == true ? "Yes" : "";
 
         var note = vm.SelectedNote;
         if (note is not null)
@@ -1278,6 +1312,28 @@ public sealed partial class NotePage : UserControl
 
         _bugFormSteps = new TextBox { Header = "Steps to Reproduce", TextWrapping = TextWrapping.Wrap, Height = 100, AcceptsReturn = true };
         form.Children.Add(_bugFormSteps);
+
+        var resultRow = new Grid { ColumnSpacing = 12, Margin = new Thickness(0, 4, 0, 0) };
+        resultRow.ColumnDefinitions.Add(new ColumnDefinition());
+        resultRow.ColumnDefinitions.Add(new ColumnDefinition());
+        resultRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        _bugFormGlobalObserved = new TextBox { Header = "Observed Result", TextWrapping = TextWrapping.Wrap, AcceptsReturn = true, MinHeight = 60 };
+        _bugFormGlobalExpected = new TextBox { Header = "Expected Result", TextWrapping = TextWrapping.Wrap, AcceptsReturn = true, MinHeight = 60 };
+        _bugFormNeedsLangSpecific = new CheckBox
+        {
+            Content = "Needs language specific results",
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(4, 0, 0, 0),
+        };
+        _bugFormNeedsLangSpecific.Checked += (_, _) => UpdateLangResultVisibility();
+        _bugFormNeedsLangSpecific.Unchecked += (_, _) => UpdateLangResultVisibility();
+        Grid.SetColumn(_bugFormGlobalObserved, 0);
+        Grid.SetColumn(_bugFormGlobalExpected, 1);
+        Grid.SetColumn(_bugFormNeedsLangSpecific, 2);
+        resultRow.Children.Add(_bugFormGlobalObserved);
+        resultRow.Children.Add(_bugFormGlobalExpected);
+        resultRow.Children.Add(_bugFormNeedsLangSpecific);
+        form.Children.Add(resultRow);
 
         form.Children.Add(new Border { Height = 1, Margin = new Thickness(0, 4, 0, 4), Background = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0)) });
         form.Children.Add(new TextBlock { Text = "Languages", FontWeight = Microsoft.UI.Text.FontWeights.SemiBold });

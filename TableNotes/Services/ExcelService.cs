@@ -115,6 +115,9 @@ public class ExcelService
                     Col18 = columnCount >= 18 ? row.Cell(18).GetString() : string.Empty,
                     Col19 = columnCount >= 19 ? row.Cell(19).GetString() : string.Empty,
                     Col20 = columnCount >= 20 ? row.Cell(20).GetString() : string.Empty,
+                    Col21 = columnCount >= 21 ? row.Cell(21).GetString() : string.Empty,
+                    Col22 = columnCount >= 22 ? row.Cell(22).GetString() : string.Empty,
+                    Col23 = columnCount >= 23 ? row.Cell(23).GetString() : string.Empty,
                 };
                 rows.Add(r);
             }
@@ -126,7 +129,7 @@ public class ExcelService
     private static string[] GetHeaders(string pageName) => pageName switch
     {
         "Checklist" => ["String ID", "Source", "Steps to Reproduce", "French", "Italian", "German", "Spanish"],
-        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish", "Bug Status", "French Observed Result", "French Expected Result", "Italian Observed Result", "Italian Expected Result", "German Observed Result", "German Expected Result", "Spanish Observed Result", "Spanish Expected Result"],
+        "BugTracker" => ["#", "Username", "Date", "Type", "Summary", "Description", "Steps to reproduce", "French", "Italian", "German", "Spanish", "Bug Status", "French Observed Result", "French Expected Result", "Italian Observed Result", "Italian Expected Result", "German Observed Result", "German Expected Result", "Spanish Observed Result", "Spanish Expected Result", "Observed Result", "Expected Result", "Needs Language Specific Results"],
         "Changelog" => ["#", "Tester", "Date", "Type", "Description", "String ID", "Source", "Actual Result", "Expected Result", "Status"],
         "TextFiles" => ["String ID", "Source", "French", "Italian", "German", "Spanish"],
         _ => ["Column 1", "Column 2", "Column 3", "Column 4", "Column 5"]
@@ -167,6 +170,9 @@ public class ExcelService
                 if (headers.Length >= 18) ws.Cell(i + 2, 18).Value = rows[i].Col18;
                 if (headers.Length >= 19) ws.Cell(i + 2, 19).Value = rows[i].Col19;
                 if (headers.Length >= 20) ws.Cell(i + 2, 20).Value = rows[i].Col20;
+                if (headers.Length >= 21) ws.Cell(i + 2, 21).Value = rows[i].Col21;
+                if (headers.Length >= 22) ws.Cell(i + 2, 22).Value = rows[i].Col22;
+                if (headers.Length >= 23) ws.Cell(i + 2, 23).Value = rows[i].Col23;
             }
 
             ws.Columns().AdjustToContents();

@@ -25,6 +25,9 @@ public class TableRow : INotifyPropertyChanged
     private string _col18 = string.Empty;
     private string _col19 = string.Empty;
     private string _col20 = string.Empty;
+    private string _col21 = string.Empty;
+    private string _col22 = string.Empty;
+    private string _col23 = string.Empty;
 
     public string Col1 { get => _col1; set { if (_col1 != value) { _col1 = value; OnPropertyChanged(); } } }
     public string Col2 { get => _col2; set { if (_col2 != value) { _col2 = value; OnPropertyChanged(); } } }
@@ -46,6 +49,9 @@ public class TableRow : INotifyPropertyChanged
     public string Col18 { get => _col18; set { if (_col18 != value) { _col18 = value; OnPropertyChanged(); } } }
     public string Col19 { get => _col19; set { if (_col19 != value) { _col19 = value; OnPropertyChanged(); } } }
     public string Col20 { get => _col20; set { if (_col20 != value) { _col20 = value; OnPropertyChanged(); } } }
+    public string Col21 { get => _col21; set { if (_col21 != value) { _col21 = value; OnPropertyChanged(); } } }
+    public string Col22 { get => _col22; set { if (_col22 != value) { _col22 = value; OnPropertyChanged(); } } }
+    public string Col23 { get => _col23; set { if (_col23 != value) { _col23 = value; OnPropertyChanged(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;    private void OnPropertyChanged([CallerMemberName] string name = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
