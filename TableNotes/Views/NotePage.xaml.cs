@@ -85,8 +85,13 @@ public sealed partial class NotePage : UserControl
     private HashSet<string> _summaryFilterSet = new();
     private readonly Dictionary<string, TextBlock> _bugSortArrows = new();
     private readonly Dictionary<string, HashSet<string>> _bugFilterSets = new();
-    private StackPanel? _bugItemsPanel;
-    private Grid? _bugHeaderGrid;
+    private TableView? _bugTableView;
+    private bool _suppressBugSelection;
+    private TableViewColumn[]? _bugColumns;
+    private static readonly SolidColorBrush _bugCellRed = new(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0x00, 0x00));
+    private static readonly SolidColorBrush _bugCellGreen = new(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
+    private static readonly SolidColorBrush _bugCellGrey = new(Windows.UI.Color.FromArgb(0xFF, 0x6F, 0x6F, 0x6F));
+    private static readonly SolidColorBrush _bugCellBlack = new(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
 
     private static readonly double[] _bugColumnWidths =
     {
@@ -508,19 +513,9 @@ public sealed partial class NotePage : UserControl
         Grid.SetRow(searchRow, 1);
         BugTrackerSidebar.Children.Add(searchRow);
 
-        _bugHeaderGrid = BuildSortableHeader(_bugSortColumn, _bugSortAscending);
-        Grid.SetRow(_bugHeaderGrid, 2);
-        BugTrackerSidebar.Children.Add(_bugHeaderGrid);
-
-        var scroll = new ScrollViewer
-        {
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
-        };
-        _bugItemsPanel = new StackPanel();
-        scroll.Content = _bugItemsPanel;
-        Grid.SetRow(scroll, 3);
-        BugTrackerSidebar.Children.Add(scroll);
+        _bugTableView = BuildBugTableView();
+        Grid.SetRow(_bugTableView, 2);
+        BugTrackerSidebar.Children.Add(_bugTableView);
 
         var footer = new StackPanel
         {
@@ -597,9 +592,7 @@ public sealed partial class NotePage : UserControl
     private void RebuildBugTrackerRows()
     {
         var vm = GetVm();
-        if (vm?.PageName != "BugTracker" || _bugItemsPanel is null) return;
-
-        _bugItemsPanel.Children.Clear();
+        if (vm?.PageName != "BugTracker" || _bugTableView is null) return;
 
         var filtered = vm.Rows.AsEnumerable();
 
@@ -647,77 +640,197 @@ public sealed partial class NotePage : UserControl
         }
 
         var list = filtered.ToList();
-        var stroke = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
 
-        Border MakeCell(FrameworkElement content)
+        _bugTableView.ItemsSource = list;
+
+        _suppressBugSelection = true;
+        _bugTableView.SelectedItem = _selectedBugRow is not null && list.Contains(_selectedBugRow)
+            ? _selectedBugRow
+            : null;
+        _suppressBugSelection = false;
+    }
+
+    private TableView BuildBugTableView()
+    {
+        var table = new TableView
         {
-            return new Border
+            AutoGenerateColumns = false,
+            ShowExportOptions = false,
+            IsReadOnly = true,
+            HeadersVisibility = TableViewHeadersVisibility.Columns,
+            HeaderRowHeight = 50,
+            HeaderRowMinHeight = 50,
+            RowMinHeight = 40,
+            SelectionMode = ListViewSelectionMode.Single,
+            CanSortColumns = false,
+            CanFilterColumns = false,
+            CanResizeColumns = false,
+            CanReorderColumns = false,
+            Width = 914,
+            HorizontalAlignment = HorizontalAlignment.Left,
+        };
+
+        var stroke = Application.Current.Resources["ControlStrokeColorDefaultBrush"] as Brush
+            ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
+        table.GridLinesVisibility = TableViewGridLinesVisibility.All;
+        table.HorizontalGridLinesStroke = stroke;
+        table.HorizontalGridLinesStrokeThickness = 1;
+        table.VerticalGridLinesStroke = stroke;
+        table.VerticalGridLinesStrokeThickness = 1;
+
+        table.ColumnHeaderStyle = (Style)Application.Current.Resources["BugTrackerHeaderStyle"];
+
+        _bugColumns = BuildBugColumns();
+        foreach (var col in _bugColumns)
+            table.Columns.Add(col);
+
+        table.ContainerContentChanging += OnBugTableContainerContentChanging;
+        table.SelectionChanged += OnBugTableSelectionChanged;
+        return table;
+    }
+
+    private TableViewColumn[] BuildBugColumns()
+    {
+        _bugSortArrows.Clear();
+
+        var textStyle = new Style(typeof(TextBlock));
+        textStyle.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
+        textStyle.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(4, 0, 4, 0)));
+        textStyle.Setters.Add(new Setter(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis));
+
+        var stroke = Application.Current.Resources["CardStrokeColorDefaultBrush"] as Brush
+            ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
+        var headerBg = Application.Current.Resources["SubtleFillColorSecondaryBrush"] as Brush
+            ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x0A, 0, 0, 0));
+        var textFg = Application.Current.Resources["TextFillColorPrimaryBrush"] as Brush
+            ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0, 0, 0));
+        var bold = Microsoft.UI.Text.FontWeights.SemiBold;
+
+        var cols = new List<TableViewColumn>
+        {
+            new TableViewTextColumn
             {
-                BorderBrush = stroke,
-                BorderThickness = new Thickness(0, 0, 1, 1),
-                Child = content,
-            };
+                Header = BuildBugHeaderCell("#", "Col1", null, stroke, headerBg, textFg, bold),
+                Binding = new Binding { Path = new PropertyPath("Col1") },
+                ElementStyle = textStyle,
+                Width = new GridLength(_bugColumnWidths[0]),
+            },
+            new TableViewTextColumn
+            {
+                Header = BuildBugHeaderCell("Summary", "Col5", "Summary", stroke, headerBg, textFg, bold),
+                Binding = new Binding { Path = new PropertyPath("Col5") },
+                ElementStyle = textStyle,
+                Width = new GridLength(_bugColumnWidths[1]),
+            },
+            new TableViewTextColumn
+            {
+                Header = BuildBugHeaderCell("Bug Status", "Col12", "Status", stroke, headerBg, textFg, bold),
+                Binding = new Binding { Path = new PropertyPath("Col12") },
+                ElementStyle = textStyle,
+                Width = new GridLength(_bugColumnWidths[2]),
+            },
+        };
+
+        string[] groupLabels = { "Language Status", "Observed Results", "Expected Results", "Screenshots" };
+        string[] kinds = { "Lang", "Obs", "Exp", "Shot" };
+
+        int i = 3;
+        for (int g = 0; g < 4; g++)
+        {
+            for (int l = 0; l < _langMeta.Length; l++)
+            {
+                var colIdx = i++;
+                var key = _langMeta[l].Key;
+                cols.Add(new BugLangColumn
+                {
+                    Header = BuildBugLangHeader(key, _bugSortKeys[colIdx], groupLabels[g], l == 0, stroke, headerBg, textFg, bold),
+                    Kind = kinds[g],
+                    Label = key,
+                    Width = new GridLength(_bugColumnWidths[colIdx]),
+                });
+            }
         }
 
-        for (int i = 0; i < list.Count; i++)
+        UpdateSortIndicators();
+        return cols.ToArray();
+    }
+
+    private void OnBugTableContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+    {
+        if (args.InRecycleQueue || args.Item is not TableRow row)
+            return;
+
+        if (_bugColumns is null)
+            return;
+
+        for (int i = 0; i < _bugColumns.Length; i++)
         {
-            var row = list[i];
+            var col = _bugColumns[i];
+            var cell = FindTableViewCell(args.ItemContainer, args.ItemIndex, col);
+            if (cell is null)
+                continue;
 
-            var rowGrid = new Grid { Height = 40, Margin = new Thickness(1, 0, 1, 0) };
-            foreach (var w in _bugColumnWidths)
-                rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(w) });
-
-            var selBorder = new Border { IsHitTestVisible = false };
-            if (ReferenceEquals(row, _selectedBugRow))
-                selBorder.Background = GetBugStatusColor(row.Col12);
-            Grid.SetColumnSpan(selBorder, rowGrid.ColumnDefinitions.Count);
-            rowGrid.Children.Add(selBorder);
-
-            var cells = new List<FrameworkElement>
-            {
-                MakeCell(new TextBlock { Text = row.Col1, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis }),
-                MakeCell(new TextBlock { Text = row.Col5, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 4, 0), TextTrimming = TextTrimming.CharacterEllipsis }),
-                MakeCell(BuildStatusPanel(row)),
-            };
-            foreach (var (key, _, _, _) in _langMeta)
-                cells.Add(MakeCell(BuildLangCell(key, LangCellStatus(row, key), "Lang")));
-            foreach (var (key, _, _, _) in _langMeta)
-                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Obs", key), "Obs")));
-            foreach (var (key, _, _, _) in _langMeta)
-                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Exp", key), "Exp")));
-            foreach (var (key, _, _, _) in _langMeta)
-                cells.Add(MakeCell(BuildLangCell(key, CellStatus(row, "Shot", key), "Shot")));
-
-            for (int c = 0; c < cells.Count; c++)
-            {
-                Grid.SetColumn(cells[c], c);
-                rowGrid.Children.Add(cells[c]);
-            }
-
-            rowGrid.PointerPressed += (_, _) => OnBugSelected(row);
-            _bugItemsPanel.Children.Add(rowGrid);
+            cell.Background = col is BugLangColumn langCol
+                ? LangCellBrush(langCol.Kind, CellStatus(row, langCol.Kind, langCol.Label))
+                : null;
         }
     }
 
-    private Grid BuildSortableHeader(string sortedColumn, bool sortAscending)
+    private void OnBugTableSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        var header = new Grid
+        if (_suppressBugSelection)
+            return;
+
+        if (sender is TableView { SelectedItem: TableRow row })
+            OnBugSelected(row);
+    }
+
+    private static Brush LangCellBrush(string kind, string? status) => kind == "Lang"
+        ? status switch
         {
-            Width = 914,
-            HorizontalAlignment = HorizontalAlignment.Left,
-            Margin = new Thickness(0, 0, 0, 6)
+            "Affected" => _bugCellRed,
+            "Not Affected" => _bugCellGreen,
+            _ => _bugCellGrey,
+        }
+        : status switch
+        {
+            "Pending" => _bugCellRed,
+            "Done" => _bugCellGreen,
+            _ => _bugCellGrey,
         };
-        foreach (var w in _bugColumnWidths)
-            header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(w) });
-        header.RowDefinitions.Add(new RowDefinition { Height = new GridLength(26) });
-        header.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24) });
 
-        var bold = Microsoft.UI.Text.FontWeights.SemiBold;
-        var stroke = Application.Current.Resources["CardStrokeColorDefaultBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x33, 0, 0, 0));
-        var headerBg = Application.Current.Resources["SubtleFillColorSecondaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0x0A, 0, 0, 0));
-        var textFg = Application.Current.Resources["TextFillColorPrimaryBrush"] as Brush ?? new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0, 0, 0));
+    private sealed class BugLangColumn : TableViewTemplateColumn
+    {
+        public string Kind { get; set; } = "";
+        public string Label { get; set; } = "";
 
-        static Button MakeFilterBtn(string tag)
+        public override FrameworkElement GenerateElement(TableViewCell cell, object? dataItem)
+        {
+            return new Border
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Child = new TextBlock
+                {
+                    Text = Label,
+                    Foreground = _bugCellBlack,
+                    FontWeight = Microsoft.UI.Text.FontWeights.Bold,
+                    FontSize = 12,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                },
+            };
+        }
+    }
+
+    private FrameworkElement BuildBugHeaderCell(string text, string sortKey, string? filterTag, Brush stroke, Brush headerBg, Brush textFg, Windows.UI.Text.FontWeight bold)
+    {
+        var sp = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        sp.Children.Add(new TextBlock { Text = text, FontWeight = bold, Foreground = textFg, VerticalAlignment = VerticalAlignment.Center });
+        var arrow = new TextBlock { FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
+        _bugSortArrows[sortKey] = arrow;
+        sp.Children.Add(arrow);
+        if (filterTag is not null)
         {
             var btn = new Button
             {
@@ -730,48 +843,43 @@ public sealed partial class NotePage : UserControl
                 BorderThickness = new Thickness(0),
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(2, 0, 0, 0),
-                Tag = tag,
+                Tag = filterTag,
             };
             btn.Tapped += (_, e) => e.Handled = true;
-            return btn;
+            btn.Click += (_, _) => BuildFilterPopup(btn);
+            sp.Children.Add(btn);
         }
-
-        void AddSortableCell(int row, int col, string text, string sortKey, Button? filterBtn, bool spanBoth)
+        sp.Tapped += (_, _) => ToggleSort(sortKey);
+        return new Border
         {
-            var sp = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-            sp.Children.Add(new TextBlock { Text = text, FontWeight = bold, Foreground = textFg, VerticalAlignment = VerticalAlignment.Center });
-            var arrow = new TextBlock { FontSize = 10, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0, 0, 0) };
-            _bugSortArrows[sortKey] = arrow;
-            sp.Children.Add(arrow);
-            if (filterBtn is not null)
-                sp.Children.Add(filterBtn);
-            sp.Tapped += (_, _) => ToggleSort(sortKey);
-            var cell = new Border
-            {
-                Background = headerBg,
-                BorderBrush = stroke,
-                BorderThickness = new Thickness(0, 0, 1, 1),
-                Padding = new Thickness(4, 0, 4, 0),
-                Child = sp,
-            };
-            Grid.SetColumn(cell, col);
-            Grid.SetRow(cell, row);
-            if (spanBoth)
-                Grid.SetRowSpan(cell, 2);
-            header.Children.Add(cell);
-        }
+            Background = headerBg,
+            BorderBrush = stroke,
+            BorderThickness = new Thickness(0, 0, 1, 0),
+            Padding = new Thickness(4, 0, 4, 0),
+            Child = sp,
+        };
+    }
 
-        void AddGroupCell(int col, int span, string text)
+    private FrameworkElement BuildBugLangHeader(string langKey, string sortKey, string groupLabel, bool firstInGroup, Brush stroke, Brush headerBg, Brush textFg, Windows.UI.Text.FontWeight bold)
+    {
+        var grid = new Grid();
+        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(25) });
+        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24) });
+
+        if (firstInGroup)
         {
-            var cell = new Border
+            var label = new Border
             {
                 Background = headerBg,
                 BorderBrush = stroke,
                 BorderThickness = new Thickness(0, 0, 1, 0),
-                Padding = new Thickness(12, 0, 12, 0),
+                Width = 144,
+                Height = 25,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
                 Child = new TextBlock
                 {
-                    Text = text,
+                    Text = groupLabel,
                     FontWeight = bold,
                     Foreground = textFg,
                     TextWrapping = TextWrapping.Wrap,
@@ -781,69 +889,41 @@ public sealed partial class NotePage : UserControl
                     VerticalAlignment = VerticalAlignment.Center,
                 },
             };
-            Grid.SetColumn(cell, col);
-            Grid.SetColumnSpan(cell, span);
-            Grid.SetRow(cell, 0);
-            header.Children.Add(cell);
+            Grid.SetRow(label, 0);
+            grid.Children.Add(label);
         }
 
-        void AddSubHeaderCell(int col, string sortKey, string langKey)
+        var sp = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        var arrow = new TextBlock { FontSize = 9, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 2, 0) };
+        _bugSortArrows[sortKey] = arrow;
+        var btn = new Button
         {
-            var sp = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-            var arrow = new TextBlock { FontSize = 9, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 2, 0) };
-            _bugSortArrows[sortKey] = arrow;
-            var btn = new Button
-            {
-                Content = "\uE712",
-                FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                FontSize = 10,
-                Width = 18,
-                Height = 18,
-                Padding = new Thickness(0),
-                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            btn.Click += (_, _) => BuildLangFilterPopup(btn, sortKey, langKey);
-            sp.Children.Add(arrow);
-            sp.Children.Add(btn);
-            var cell = new Border
-            {
-                Background = headerBg,
-                BorderBrush = stroke,
-                BorderThickness = new Thickness(0, 0, 1, 1),
-                Padding = new Thickness(0),
-                Child = sp,
-            };
-            Grid.SetColumn(cell, col);
-            Grid.SetRow(cell, 1);
-            header.Children.Add(cell);
-        }
+            Content = "\uE712",
+            FontFamily = new FontFamily("Segoe MDL2 Assets"),
+            FontSize = 10,
+            Width = 18,
+            Height = 18,
+            Padding = new Thickness(0),
+            Background = new SolidColorBrush(Windows.UI.Color.FromArgb(0, 0, 0, 0)),
+            BorderThickness = new Thickness(0),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        btn.Click += (_, _) => BuildLangFilterPopup(btn, sortKey, langKey);
+        sp.Children.Add(arrow);
+        sp.Children.Add(btn);
 
-        var summaryFilterBtn = MakeFilterBtn("Summary");
-        summaryFilterBtn.Click += (_, _) => BuildFilterPopup(summaryFilterBtn);
-        var statusFilterBtn = MakeFilterBtn("Status");
-        statusFilterBtn.Click += (_, _) => BuildFilterPopup(statusFilterBtn);
-
-        AddSortableCell(0, 0, "#", "Col1", null, spanBoth: true);
-        AddSortableCell(0, 1, "Summary", "Col5", summaryFilterBtn, spanBoth: true);
-        AddSortableCell(0, 2, "Bug Status", "Col12", statusFilterBtn, spanBoth: true);
-
-        AddGroupCell(3, 4, "Language Status");
-        AddGroupCell(7, 4, "Observed Results");
-        AddGroupCell(11, 4, "Expected Results");
-        AddGroupCell(15, 4, "Screenshots");
-
-        for (int g = 0; g < 4; g++)
+        var subHeader = new Border
         {
-            for (int l = 0; l < _langMeta.Length; l++)
-            {
-                var col = 3 + g * 4 + l;
-                AddSubHeaderCell(col, _bugSortKeys[col], _langMeta[l].Key);
-            }
-        }
+            Background = headerBg,
+            BorderBrush = stroke,
+            BorderThickness = new Thickness(0, 0, 1, 0),
+            Padding = new Thickness(0),
+            Child = sp,
+        };
+        Grid.SetRow(subHeader, 1);
+        grid.Children.Add(subHeader);
 
-        return header;
+        return grid;
     }
 
     private void BuildFilterPopup(FrameworkElement target)
@@ -1758,70 +1838,6 @@ public sealed partial class NotePage : UserControl
             var retry = TitleBox.ActualHeight;
             target.Margin = new Thickness(0, retry, 0, 0);
         });
-    }
-
-    private static SolidColorBrush GetBugStatusColor(string? status)
-    {
-        var c = status switch
-        {
-            "Ready to vet" => Windows.UI.Color.FromArgb(0x33, 0x00, 0x78, 0xD7),
-            "Approved" => Windows.UI.Color.FromArgb(0x33, 0xC8, 0xE6, 0xC9),
-            "Reporting" => Windows.UI.Color.FromArgb(0x33, 0xFF, 0x8C, 0x00),
-            "Uploaded" => Windows.UI.Color.FromArgb(0x33, 0xFF, 0xD7, 0x00),
-            "Not a bug" => Windows.UI.Color.FromArgb(0x33, 0x80, 0x80, 0x80),
-            "Duplicate" => Windows.UI.Color.FromArgb(0x33, 0xCC, 0x00, 0x00),
-            _ => Windows.UI.Color.FromArgb(0x33, 0x00, 0x78, 0xD7),
-        };
-        return new SolidColorBrush(c);
-    }
-
-    private static FrameworkElement BuildStatusPanel(TableRow row)
-    {
-        var status = row.Col12 ?? "";
-        var tb = new TextBlock
-        {
-            Text = status,
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(4, 0, 4, 0),
-            TextTrimming = TextTrimming.CharacterEllipsis,
-        };
-        return tb;
-    }
-
-    private static FrameworkElement BuildLangCell(string label, string? status, string kind)
-    {
-        var red = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0xFF, 0x00, 0x00));
-        var green = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xFF, 0x00));
-        var grey = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x6F, 0x6F, 0x6F));
-        var black = new SolidColorBrush(Windows.UI.Color.FromArgb(0xFF, 0x00, 0x00, 0x00));
-        var bg = kind == "Lang"
-            ? status switch
-            {
-                "Affected" => red,
-                "Not Affected" => green,
-                _ => grey,
-            }
-            : status switch
-            {
-                "Pending" => red,
-                "Done" => green,
-                _ => grey,
-            };
-        return new Border
-        {
-            Background = bg,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Child = new TextBlock
-            {
-                Text = label,
-                Foreground = black,
-                FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-                FontSize = 12,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-            },
-        };
     }
 
     private void OnNotesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
